@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jost@latest/latin-400.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jost@latest/latin-500.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jost@latest/latin-600.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
@@ -42,6 +43,8 @@ a{color:inherit;text-decoration:none}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 .btn-admin{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:8px 16px;border-radius:999px;transition:.25s}
 .btn-admin:hover{background:var(--gold);color:#fff}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:#c9c1b2;display:inline-block}
+.sb-dot.on{background:#5d8f68;box-shadow:0 0 0 3px rgba(93,143,104,.2)}
 .menu-btn{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:10px;align-items:center;justify-content:center;background:var(--card)}
 .menu-btn svg{width:20px;height:20px;stroke:var(--ink)}
 
@@ -64,9 +67,7 @@ a{color:inherit;text-decoration:none}
 .view-head p{color:var(--soft);max-width:560px;margin:10px auto 0;font-size:16px}
 .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-weight:600}
 
-.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;transform:scale(1.03)}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(247,242,233,.97) 0%,rgba(247,242,233,.88) 38%,rgba(247,242,233,.45) 68%,rgba(247,242,233,.15) 100%)}
+.hero{position:relative;min-height:min(88vh,820px);display:flex;align-items:center;overflow:hidden;background:linear-gradient(120deg,#F7F2E9 0%,#F3E8D2 100%)}
 .hero-content{position:relative;max-width:1240px;margin:0 auto;padding:90px 26px 70px;width:100%}
 .hero .emblem{height:64px;margin-bottom:22px}
 .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(44px,7vw,84px);line-height:1.02;letter-spacing:.01em}
@@ -168,34 +169,23 @@ a{color:inherit;text-decoration:none}
 .advice h3{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);font-weight:600;margin-bottom:10px}
 .advice p{max-width:640px;margin:0 auto 22px;color:#E4EAE4;font-size:15.5px}
 
-.setup-banner{background:var(--green);color:var(--ivory);border-radius:var(--rad);padding:28px 30px;margin-bottom:26px;position:relative;overflow:hidden}
-.setup-banner::after{content:"◇";position:absolute;right:24px;top:16px;color:var(--gold-soft)}
-.setup-banner h3{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:600;margin-bottom:6px}
-.setup-banner .sb-sub{color:#E4EAE4;font-size:15px;margin-bottom:12px}
-.setup-banner ol{margin:0 0 18px 20px;display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:#E4EAE4}
-.setup-banner ol b{color:var(--gold-soft)}
 .admin-wrap{display:grid;grid-template-columns:minmax(320px,460px) 1fr;gap:26px;align-items:start;margin-bottom:34px}
-.form-card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:28px;position:sticky;top:86px}
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:28px}
 .form-card h3{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:4px}
 .form-card .sub{color:var(--soft);font-size:13.5px;margin-bottom:20px}
 .f-row{margin-bottom:14px}
 .f-row label{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
 .f-row input,.f-row select,.f-row textarea{width:100%;border:1px solid var(--line);background:var(--ivory2);border-radius:10px;padding:11px 14px;outline:none;transition:.2s}
 .f-row input:focus,.f-row select:focus,.f-row textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-pale)}
-.f-row textarea{resize:vertical;min-height:74px}
+.f-row textarea{resize:vertical;min-height:64px}
 .f-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .dropzone{border:1.5px dashed var(--gold-soft);border-radius:14px;background:var(--ivory2);padding:18px;text-align:center;cursor:pointer;transition:.25s;position:relative}
 .dropzone:hover,.dropzone.drag{border-color:var(--gold);background:var(--gold-pale)}
 .dropzone .dz-txt{color:var(--soft);font-size:13.5px}
 .dropzone .dz-txt b{color:var(--gold)}
-.dropzone img{max-height:180px;margin:0 auto;border-radius:10px;box-shadow:var(--shadow)}
+.dropzone img{max-height:160px;margin:0 auto;border-radius:10px;box-shadow:var(--shadow)}
 .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .admin-list h3{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:14px}
-.img-progress{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
-.img-progress .ip-top{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
-.img-progress .ip-top b{color:var(--gold)}
-.ip-bar{height:8px;background:var(--line2);border-radius:999px;overflow:hidden;margin-top:10px}
-#ipFill{display:block;height:100%;background:linear-gradient(90deg,var(--gold-soft),var(--gold));width:0;transition:width .5s ease}
 .a-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px;transition:.25s;flex-wrap:wrap}
 .a-row:hover{border-color:var(--gold-soft);box-shadow:var(--shadow)}
 .a-row img{width:52px;height:52px;object-fit:cover;border-radius:10px;border:1px solid var(--line2)}
@@ -203,35 +193,20 @@ a{color:inherit;text-decoration:none}
 .a-main b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .a-main span{font-size:12.5px;color:var(--soft)}
 .a-badge{font-size:10px;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:4px 10px;font-weight:600;white-space:nowrap}
-.a-badge.base{background:var(--gold-pale);color:var(--gold)}
-.a-badge.new{background:#E4EAE4;color:var(--green)}
-.a-badge.own{background:#E4EAE4;color:var(--green);border:1px solid var(--green)}
-.a-badge.ref{background:var(--ivory2);color:var(--soft);border:1px dashed var(--line)}
+.a-badge.on{background:#E4EAE4;color:var(--green);border:1px solid var(--green)}
+.a-badge.off{background:var(--ivory2);color:var(--soft);border:1px dashed var(--line)}
 .a-price{font-weight:600;font-size:14px;white-space:nowrap}
 .a-actions{display:flex;gap:6px;flex-wrap:wrap}
 .a-btn{font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--soft);transition:.2s}
 .a-btn:hover{border-color:var(--gold);color:var(--gold)}
 .a-btn.del:hover{border-color:#A8552F;color:#A8552F}
-.a-btn.imgbtn{border-color:var(--gold-soft);color:var(--gold)}
 .admin-note{background:var(--gold-pale);border:1px solid var(--gold-soft);color:#6b5426;border-radius:12px;padding:14px 16px;font-size:13.5px;margin-bottom:20px}
-
-.batch-zone,.backup-zone{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:26px;margin-bottom:26px}
-.batch-zone h3,.backup-zone h3{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:4px}
-.batch-zone .sub,.backup-zone .sub{color:var(--soft);font-size:13.5px;margin-bottom:18px}
-.batch-count{display:inline-block;margin-left:10px;background:var(--gold-pale);border:1px solid var(--gold-soft);color:#6b5426;border-radius:999px;padding:4px 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;vertical-align:middle}
-.batch-dz{margin-bottom:16px}
-.b-row{display:flex;align-items:center;gap:12px;background:var(--ivory2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
-.b-row img{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--line2);flex:none}
-.b-info{flex:1;min-width:0}
-.b-info b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.b-info span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
-.b-select{flex:1.2;min-width:170px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;font-size:13px;outline:none}
-.b-select:focus{border-color:var(--gold)}
-.b-remove{color:var(--soft);font-size:16px;border:1px solid var(--line);border-radius:8px;width:30px;height:30px;flex:none;transition:.2s}
-.b-remove:hover{color:#A8552F;border-color:#A8552F}
+.backup-zone{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:26px;margin-bottom:26px}
+.backup-zone h3{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:4px}
+.backup-zone .sub{color:var(--soft);font-size:13.5px;margin-bottom:18px}
 .backup-actions{display:flex;gap:10px;flex-wrap:wrap}
-.batch-tip{margin-top:14px;font-size:12.5px;color:var(--soft)}
-.batch-tip b{color:var(--gold)}
+.login-card{max-width:460px;margin:0 auto 60px}
+.login-card .sb-help{margin-top:14px;font-size:12.5px;color:var(--soft)}
 
 .modal{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal[hidden]{display:none}
@@ -258,13 +233,10 @@ a{color:inherit;text-decoration:none}
 .m-block ul{list-style:none}
 .m-block li{position:relative;padding-left:20px;font-size:14.5px;color:var(--soft);margin-bottom:6px}
 .m-block li::before{content:"◇";position:absolute;left:0;color:var(--gold);font-size:11px;top:2px}
-.m-usage{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--soft)}
-.m-warn{background:#F6E7DE;border:1px solid #E3C3B0;color:#8A4A2B;border-radius:12px;padding:12px 16px;font-size:13px;margin-top:12px}
 .m-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;flex-wrap:wrap}
 .m-routine{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);display:inline-flex;gap:8px;align-items:center;font-weight:500}
 .m-routine .ic{width:14px;height:14px}
 
-/* ---------- Lightbox zoom ---------- */
 #lightbox{position:fixed;inset:0;z-index:140;display:flex;align-items:center;justify-content:center}
 #lightbox[hidden]{display:none}
 .lb-bg{position:absolute;inset:0;background:rgba(22,18,12,.94)}
@@ -291,13 +263,12 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 #toastZone{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:150;display:flex;flex-direction:column;gap:8px;align-items:center}
 .toast{background:var(--green);color:#fff;border-radius:999px;padding:12px 24px;font-size:13.5px;letter-spacing:.06em;box-shadow:var(--shadow-lg);animation:toastIn .35s ease}
 @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
+.loading{ text-align:center;color:var(--soft);padding:60px 0;letter-spacing:.14em;text-transform:uppercase;font-size:12px }
 
 @media(max-width:960px){
   .admin-wrap{grid-template-columns:1fr}
-  .form-card{position:static}
   .modal-card{grid-template-columns:1fr;max-width:560px}
   .modal-img{padding:24px}
   .values-in{grid-template-columns:repeat(2,1fr);gap:16px}
@@ -309,8 +280,6 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   .mainnav button{text-align:left;padding:13px 8px;border-bottom:1px solid var(--line2);font-size:14px}
   .menu-btn{display:flex}
   .cat-head p{display:none}
-  .b-row{flex-wrap:wrap}
-  .b-select{min-width:100%}
   .lb-hint{display:none}
 }
 @media(max-width:520px){
@@ -343,10 +312,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       <button data-goto="contacto">Contacto</button>
     </nav>
     <div class="topbar-actions">
-      <button class="btn-admin" data-goto="admin">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        Admin
-      </button>
+      <button class="btn-admin" data-goto="admin"><span class="sb-dot" id="sbDot"></span> Admin</button>
       <button class="menu-btn" id="menuBtn" aria-label="Menú">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
       </button>
@@ -357,8 +323,6 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 <main>
 <section class="view on" id="view-inicio">
   <div class="hero">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-overlay"></div>
     <div class="hero-content">
       <svg class="emblem" viewBox="0 0 300 72" fill="none" aria-hidden="true">
         <line x1="6" y1="36" x2="106" y2="36" stroke="#B8872C" stroke-width="1"/>
@@ -464,91 +428,76 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 <section class="view" id="view-admin">
   <div class="container">
     <div class="view-head">
-      <p class="kicker">Gestión</p>
+      <p class="kicker">Gestión · Supabase</p>
       <h2>Panel de administrador</h2>
-      <p>Carga por primera vez las imágenes reales de tus productos y gestiona toda la colección.</p>
+      <p>Los productos, imágenes y usos sugeridos se guardan en tu base de datos de Supabase y se publican al instante en https://skincareyuwa.github.io/</p>
     </div>
 
-    <div class="setup-banner" id="setupBanner" hidden>
-      <h3>◇ Asistente de carga inicial de imágenes</h3>
-      <p class="sb-sub">Aquí cargamos por primera vez las imágenes reales de tus productos, aunque sean 40 o más. Sigue estos tres pasos:</p>
-      <ol>
-        <li><b>Sube tus imágenes:</b> todas juntas en la «Carga masiva de imágenes», o una por una con el botón «Imagen» de cada producto.</li>
-        <li><b>Confirma el destino:</b> el sistema adivina el producto por el nombre del archivo; ajusta lo que falte y pulsa «Aplicar imágenes».</li>
-        <li><b>Verifica y comparte:</b> mira el progreso en «Imágenes propias», descarga el PDF de alta calidad y exporta tu respaldo JSON.</li>
-      </ol>
-      <button class="btn btn-gold" id="setupStart">Entendido, comenzar</button>
-    </div>
-
-    <div class="admin-wrap">
-      <form class="form-card" id="productForm" novalidate>
-        <h3 id="formTitle">Nuevo producto</h3>
-        <p class="sub">Los productos nuevos se crean a partir de una imagen.</p>
-        <div class="f-row">
-          <label>Imagen del producto *</label>
-          <div class="dropzone" id="dropzone">
-            <div class="dz-txt" id="dzTxt"><b>Haz clic o arrastra</b> una imagen aquí<br>JPG / PNG · cuadrada ideal (1:1)</div>
-          </div>
-          <input type="file" id="fImage" accept="image/*" hidden>
-        </div>
-        <div class="f-row"><label>Nombre del producto *</label><input id="fName" type="text" placeholder="Ej: Triple Collagen Toner 4.0"></div>
-        <div class="f-2">
-          <div class="f-row"><label>Marca *</label><input id="fBrand" list="brandList" type="text" placeholder="Ej: MEDICUBE"><datalist id="brandList"></datalist></div>
-          <div class="f-row"><label>Precio (COP) *</label><input id="fPrice" type="number" min="0" step="500" placeholder="99900"></div>
-        </div>
-        <div class="f-2">
-          <div class="f-row"><label>Categoría *</label><select id="fCat"></select></div>
-          <div class="f-row" id="catNewRow" hidden><label>Nueva categoría</label><input id="fCatNew" type="text" placeholder="Nombre de la categoría"></div>
-        </div>
-        <div class="f-2">
-          <div class="f-row"><label>Tamaño / presentación *</label><input id="fSize" type="text" placeholder="Ej: 250 ml · 1 unidad"></div>
-          <div class="f-row"><label>Momento de uso</label><select id="fTime"><option>Día y Noche</option><option>Día</option><option>Noche</option></select></div>
-        </div>
-        <div class="f-row"><label>Paso de rutina</label><select id="fStep">
-          <option>Paso 1</option><option>Paso 2</option><option>Paso 3</option><option>Paso 4</option><option>Paso 5</option><option>Paso 6</option><option>Paso 7</option><option>Paso 8</option><option>Antes del tónico</option><option>Tratamiento</option>
-        </select></div>
-        <div class="f-row"><label>Beneficios (uno por línea)</label><textarea id="fBenefits" placeholder="Hidrata intensamente.&#10;Aporta luminosidad."></textarea></div>
-        <div class="f-row"><label>Uso sugerido</label><textarea id="fUsage" placeholder="Aplica después de la limpieza…"></textarea></div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-gold" id="submitBtn">Publicar producto</button>
-          <button type="button" class="btn-ghost" id="cancelEdit" hidden>Cancelar edición</button>
-        </div>
-      </form>
-      <div class="admin-list">
-        <div class="admin-note">◇ Las imágenes se guardan en este dispositivo con almacenamiento ampliado (IndexedDB): puedes subir <b>40 imágenes o más</b>. Usa <b>Exportar JSON</b> como respaldo o para mover el catálogo a otro dispositivo.</div>
-        <div class="img-progress">
-          <div class="ip-top"><span>Imágenes propias de tu tienda</span><b id="ipText">0 de 0</b></div>
-          <div class="ip-bar"><span id="ipFill"></span></div>
-        </div>
-        <h3>Productos del catálogo (<span id="adminCount">0</span>)</h3>
-        <div id="adminRows"></div>
-        <div id="hiddenZone"></div>
-      </div>
-    </div>
-
-    <div class="batch-zone">
-      <h3>Carga masiva de imágenes <span class="batch-count" id="batchCount">0 en lista</span></h3>
-      <p class="sub">Sube aquí <b>todas las imágenes de tu tienda de una sola vez</b> (cuadradas 1254×1254 o similares). Se procesan en fila sin saturar tu equipo. El sistema intenta asignar cada imagen a su producto según el nombre del archivo; si no coincide, elige el producto en el selector y pulsa <b>Aplicar imágenes</b>.</p>
-      <div class="dropzone batch-dz" id="batchDropzone">
-        <div class="dz-txt"><b>Haz clic o arrastra varias imágenes</b> aquí<br>Selecciona todas de una vez · JPG / PNG</div>
-      </div>
-      <input type="file" id="batchInput" accept="image/*" multiple hidden>
-      <div id="batchList"></div>
+    <!-- Login -->
+    <div class="form-card login-card" id="loginCard">
+      <h3>Iniciar sesión</h3>
+      <p class="sub">Usa el usuario admin creado en Supabase → Authentication.</p>
+      <div class="f-row"><label>Correo</label><input id="loginEmail" type="email" placeholder="admin@yuwa.co"></div>
+      <div class="f-row"><label>Contraseña</label><input id="loginPass" type="password" placeholder="••••••••"></div>
       <div class="form-actions">
-        <button class="btn btn-gold" id="applyBatch">Aplicar imágenes</button>
-        <button class="btn-ghost" id="clearBatch">Descartar lista</button>
+        <button class="btn btn-gold" id="loginBtn">Entrar</button>
+        <button class="btn-ghost" id="logoutBtn" hidden>Cerrar sesión</button>
       </div>
-      <p class="batch-tip"><b>Consejo:</b> nombra los archivos con la marca o el producto (ej: <i>anua-rice-7.jpg</i>) para que la asignación automática sea exacta. Recuerda: al hacer clic sobre cualquier imagen del catálogo podrás ampliarla con zoom para revisar su texto.</p>
+      <p class="sb-help" id="sbHelp"></p>
     </div>
 
-    <div class="backup-zone">
-      <h3>Respaldo y versión física</h3>
-      <p class="sub">Descarga el <b>PDF en alta calidad</b> (portada con imágenes, contenido con enlaces, rutina y productos por categoría) para imprimirlo o compartirlo, y exporta un JSON con todos los productos e imágenes.</p>
-      <div class="backup-actions">
-        <button class="btn btn-gold" id="pdfBtn2">Descargar PDF alta calidad</button>
-        <button class="btn btn-outline" id="exportBtn">Exportar JSON</button>
-        <button class="btn-ghost" id="importBtn">Importar JSON</button>
-        <input type="file" id="importInput" accept="application/json,.json" hidden>
+    <!-- Herramientas admin -->
+    <div id="adminTools" hidden>
+      <div class="admin-wrap">
+        <form class="form-card" id="productForm" novalidate>
+          <h3 id="formTitle">Nuevo producto</h3>
+          <p class="sub">Se publica en Supabase (tabla products + usos_sugeridos + Storage).</p>
+          <div class="f-row">
+            <label>Imagen del producto *</label>
+            <div class="dropzone" id="dropzone">
+              <div class="dz-txt" id="dzTxt"><b>Haz clic o arrastra</b> una imagen aquí<br>JPG / PNG · cuadrada ideal (1:1)</div>
+            </div>
+            <input type="file" id="fImage" accept="image/*" hidden>
+          </div>
+          <div class="f-row"><label>…o pega una URL de imagen</label><input id="fImgUrl" type="url" placeholder="https://…/imagen.jpg"></div>
+          <div class="f-row"><label>Nombre del producto *</label><input id="fName" type="text" placeholder="Ej: Triple Collagen Toner 4.0"></div>
+          <div class="f-row"><label>Descripción destacada</label><input id="fDesc" type="text" placeholder="Ej: Hidratación, elasticidad y luminosidad diaria."></div>
+          <div class="f-2">
+            <div class="f-row"><label>Marca *</label><input id="fBrand" list="brandList" type="text" placeholder="Ej: MEDICUBE"><datalist id="brandList"></datalist></div>
+            <div class="f-row"><label>Precio (COP) *</label><input id="fPrice" type="number" min="0" step="500" placeholder="99900"></div>
+          </div>
+          <div class="f-2">
+            <div class="f-row"><label>Categoría *</label><select id="fCat"></select></div>
+            <div class="f-row" id="catNewRow" hidden><label>Nueva categoría</label><input id="fCatNew" type="text" placeholder="Nombre de la categoría"></div>
+          </div>
+          <div class="f-2">
+            <div class="f-row"><label>Tamaño / presentación *</label><input id="fSize" type="text" placeholder="Ej: 250 ml · 1 unidad"></div>
+            <div class="f-row"><label>Momento de uso</label><select id="fTime"><option>Día y Noche</option><option>Día</option><option>Noche</option></select></div>
+          </div>
+          <div class="f-row"><label>Paso de rutina</label><select id="fStep">
+            <option>Paso 1</option><option>Paso 2</option><option>Paso 3</option><option>Paso 4</option><option>Paso 5</option><option>Paso 6</option><option>Paso 7</option><option>Paso 8</option><option>Antes del tónico</option><option>Tratamiento</option>
+          </select></div>
+          <div class="f-row"><label>Beneficios (uno por línea)</label><textarea id="fBenefits" placeholder="Hidrata intensamente.&#10;Aporta luminosidad."></textarea></div>
+          <div class="f-row"><label>Usos sugeridos (uno por línea · puede tener varios)</label><textarea id="fUsos" placeholder="Aplica después de la limpieza…&#10;De día, finaliza con protector solar."></textarea></div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-gold" id="submitBtn">Publicar en Supabase</button>
+            <button type="button" class="btn-ghost" id="cancelEdit" hidden>Cancelar edición</button>
+          </div>
+        </form>
+        <div class="admin-list">
+          <div class="admin-note">◇ Conectado a Supabase: los cambios se guardan en la nube y son visibles al instante en todas las visitas del sitio. «Ocultar» desactiva el producto (activo=false) sin borrarlo.</div>
+          <h3>Productos en la base (<span id="adminCount">0</span>)</h3>
+          <div id="adminRows"></div>
+        </div>
+      </div>
+
+      <div class="backup-zone">
+        <h3>Respaldo y versión física</h3>
+        <p class="sub">Descarga el PDF en alta calidad (portada con imágenes, contenido con enlaces, rutina y productos por categoría) o exporta un JSON de respaldo.</p>
+        <div class="backup-actions">
+          <button class="btn btn-gold" id="pdfBtn2">Descargar PDF alta calidad</button>
+          <button class="btn btn-outline" id="exportBtn">Exportar JSON</button>
+        </div>
       </div>
     </div>
   </div>
@@ -570,7 +519,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
     <a href="https://wa.me/573148003634" target="_blank" rel="noopener">WhatsApp +57 314 800 3634</a>
     <a href="https://instagram.com/yuwa_co" target="_blank" rel="noopener">@yuwa_co</a>
   </div>
-  <p class="f-note">Catálogo virtual 2026 · Memoria Maestra v1.0 · Belleza coreana, elegida para tu piel.</p>
+  <p class="f-note">Catálogo virtual 2026 · Conectado a Supabase · Belleza coreana, elegida para tu piel.</p>
 </footer>
 
 <div class="modal" id="productModal" hidden>
@@ -582,12 +531,9 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   </div>
 </div>
 
-<!-- Lightbox zoom interactivo -->
 <div id="lightbox" hidden>
   <div class="lb-bg" data-lb-close></div>
-  <div class="lb-stage" id="lbStage">
-    <img id="lbImg" src="" alt="Imagen ampliada">
-  </div>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" src="" alt="Imagen ampliada"></div>
   <p class="lb-hint">Rueda / doble clic: zoom · Arrastra: mover · Pellizco en móvil · Esc: cerrar</p>
   <div class="lb-tools">
     <button id="lbOut" aria-label="Alejar">−</button>
@@ -597,106 +543,45 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   </div>
 </div>
 
-<input type="file" id="imgForInput" accept="image/*" hidden>
 <div id="toastZone"></div>
 
 <script>
+/* ══════════════════════════════════════════════════════════
+   🔑 CONFIGURACIÓN DE SUPABASE — PASO OBLIGATORIO
+   1) Supabase → Settings → API
+   2) Copia "Project URL" y "anon public" key
+   3) Pégalas aquí abajo y sube este index.html a tu GitHub Pages
+   (La anon key es pública por diseño; la seguridad la da RLS)
+   ══════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'PEGA_AQUI_TU_ANON_KEY';
+
 /* ================= UTILIDADES ================= */
-function $(sel){ return document.querySelector(sel); }
-function $all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
-function lsGet(k, d){ try{ var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }catch(e){ return d; } }
-function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
-function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtPrice(n){ if(!n || n <= 0) return 'Precio por confirmar'; try{ return '$' + Number(n).toLocaleString('es-CO') + ' COP'; }catch(e){ return '$' + n; } }
-function linesOf(t){ return String(t || '').split(/\n+/).map(function(x){ return x.trim(); }).filter(Boolean); }
-function safeScrollTop(){ try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ try{ window.scrollTo(0,0); }catch(e2){} } }
-function syncHash(view){ try{ if(location.hash !== '#'+view){ history.replaceState(null, '', '#'+view); } }catch(e){} }
-function normText(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
-function pad2(n){ return n < 10 ? '0' + n : String(n); }
-var PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><rect width="100%" height="100%" fill="#F5EDDD"/><circle cx="320" cy="320" r="160" fill="none" stroke="#B8872C" stroke-width="3"/><text x="320" y="352" font-family="Georgia" font-size="96" fill="#B8872C" text-anchor="middle">YW</text></svg>');
-
-function compressImageFile(file, maxDim, quality, cb){
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    var img = new Image();
-    img.onload = function(){
-      var w = img.width, h = img.height;
-      var scale = Math.min(1, maxDim / Math.max(w, h));
-      w = Math.max(1, Math.round(w * scale)); h = Math.max(1, Math.round(h * scale));
-      var cv = document.createElement('canvas');
-      cv.width = w; cv.height = h;
-      var ctx = cv.getContext('2d');
-      ctx.fillStyle = '#F7F2E9'; ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
-      cb(cv.toDataURL('image/jpeg', quality));
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+const $ = s => document.querySelector(s);
+const $all = s => Array.prototype.slice.call(document.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pad2 = n => n < 10 ? '0' + n : String(n);
+const fmtPrice = n => (!n || n <= 0) ? 'Precio por confirmar' : ('$' + Number(n).toLocaleString('es-CO') + ' COP');
+const linesOf = t => String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean);
+const safeScrollTop = () => { try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); } };
+const syncHash = v => { try{ if(location.hash !== '#'+v) history.replaceState(null,'','#'+v); }catch(e){} };
+const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><rect width="100%" height="100%" fill="#F5EDDD"/><circle cx="320" cy="320" r="160" fill="none" stroke="#B8872C" stroke-width="3"/><text x="320" y="352" font-family="Georgia" font-size="96" fill="#B8872C" text-anchor="middle">YW</text></svg>');
+function toast(msg){
+  const zone = $('#toastZone'); if(!zone) return;
+  const t = document.createElement('div'); t.className='toast'; t.textContent = msg;
+  zone.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, 2600);
 }
 
-/* ================= ALMACENAMIENTO ================= */
-var useIDB = ('indexedDB' in window);
-var addedProducts = [];
-var removedSeeds  = [];
-var seedEdits     = {};
-function idbOpen(){
-  return new Promise(function(res, rej){
-    var rq = indexedDB.open('yuwa_catalog_db', 1);
-    rq.onupgradeneeded = function(){ rq.result.createObjectStore('kv'); };
-    rq.onsuccess = function(){ res(rq.result); };
-    rq.onerror = function(){ rej(rq.error); };
-  });
-}
-function idbGet(key){
-  return idbOpen().then(function(db){
-    return new Promise(function(res, rej){
-      var tx = db.transaction('kv','readonly').objectStore('kv').get(key);
-      tx.onsuccess = function(){ res(tx.result); };
-      tx.onerror = function(){ rej(tx.error); };
-    });
-  });
-}
-function idbSet(key, val){
-  return idbOpen().then(function(db){
-    return new Promise(function(res, rej){
-      var tx = db.transaction('kv','readwrite').objectStore('kv').put(val, key);
-      tx.onsuccess = function(){ res(true); };
-      tx.onerror = function(){ rej(tx.error); };
-    });
-  });
-}
-function saveAdded(){ if(useIDB){ idbSet('added', addedProducts).catch(function(){ lsSet('yuwa_added_v1', addedProducts); }); } else { lsSet('yuwa_added_v1', addedProducts); } }
-function saveRemoved(){ if(useIDB){ idbSet('removed', removedSeeds).catch(function(){ lsSet('yuwa_removed_v1', removedSeeds); }); } else { lsSet('yuwa_removed_v1', removedSeeds); } }
-function saveEdits(){ if(useIDB){ idbSet('edits', seedEdits).catch(function(){ lsSet('yuwa_edits_v1', seedEdits); }); } else { lsSet('yuwa_edits_v1', seedEdits); } }
-function loadCollections(){
-  if(!useIDB){
-    addedProducts = lsGet('yuwa_added_v1', []);
-    removedSeeds  = lsGet('yuwa_removed_v1', []);
-    seedEdits     = lsGet('yuwa_edits_v1', {});
-    return Promise.resolve();
-  }
-  return Promise.all([
-    idbGet('added').catch(function(){ return null; }),
-    idbGet('removed').catch(function(){ return null; }),
-    idbGet('edits').catch(function(){ return null; })
-  ]).then(function(v){
-    addedProducts = (v[0] != null) ? v[0] : lsGet('yuwa_added_v1', []);
-    removedSeeds  = (v[1] != null) ? v[1] : lsGet('yuwa_removed_v1', []);
-    seedEdits     = (v[2] != null) ? v[2] : lsGet('yuwa_edits_v1', {});
-    saveAdded(); saveRemoved(); saveEdits();
-  }).catch(function(){
-    addedProducts = lsGet('yuwa_added_v1', []);
-    removedSeeds  = lsGet('yuwa_removed_v1', []);
-    seedEdits     = lsGet('yuwa_edits_v1', {});
-  });
+/* ================= CLIENTE SUPABASE ================= */
+const SB_CONFIGURADO = SUPABASE_URL.indexOf('TU-PROYECTO') === -1 && SUPABASE_ANON_KEY.indexOf('PEGA_AQUI') === -1;
+let sb = null;
+if (SB_CONFIGURADO && window.supabase){
+  try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ sb = null; }
 }
 
-/* ================= DATOS MAESTROS ================= */
-var IMG_BASE = 'https://image.qwenlm.ai/public_source/4f9cbb10-0876-43f0-b9aa-0c4a48489aa4/';
-var HERO_IMG = IMG_BASE + '18ade0067-b8a8-4eaa-b6af-dc1572a35ca3.png';
-
-var CATEGORIES = [
+/* ================= DATOS DE MARCA ================= */
+const CATEGORIES = [
   {nombre:'Limpieza', desc:'Aceite y espuma limpiadora', accent:'#B4846C'},
   {nombre:'Tónicos', desc:'Preparación, hidratación y equilibrio', accent:'#78907A'},
   {nombre:'Sérums y ampollas', desc:'Activos concentrados para cada necesidad', accent:'#8A4F72'},
@@ -706,109 +591,7 @@ var CATEGORIES = [
   {nombre:'Mascarillas', desc:'Tratamientos intensivos y sensoriales', accent:'#78907A'},
   {nombre:'Tratamientos especiales', desc:'Soluciones avanzadas para la rutina', accent:'#526B5B'}
 ];
-
-var SEED = [
- {id:'P01',brand:'SKIN1004',name:'Centella Light Cleansing Oil',cat:'Limpieza',price:104900,size:'200 ml',time:'Noche',step:'Paso 1',img:IMG_BASE+'1ec94723d-05cf-4e9e-ac75-967a417b7606.png',
-  tagline:'Aceite limpiador con Centella de Madagascar.',
-  benefits:['Disuelve maquillaje, protector solar y exceso de grasa.','Textura ligera de uso diario.','Calma la piel mientras limpia.','Se emulsiona y enjuaga sin sensación pesada.'],
-  usage:'Usa sobre el rostro y las manos secas. Masajea suavemente, agrega un poco de agua hasta formar una emulsión lechosa y enjuaga con agua tibia.'},
- {id:'P02',brand:'SKIN1004',name:'Centella Ampoule Foam',cat:'Limpieza',price:79000,size:'125 ml',time:'Día y Noche',step:'Paso 2',img:IMG_BASE+'1f4587697-bcbe-4dfd-a38d-487de8d86142.png',
-  tagline:'Espuma limpiadora facial que limpia sin resecar.',
-  benefits:['Limpia sin resecar.','Ayuda a calmar la piel.','Ideal como segundo paso de la doble limpieza.','Deja una sensación fresca y confortable.'],
-  usage:'Humedece las manos y el rostro. Forma espuma con una pequeña cantidad, masajea suavemente y enjuaga con agua tibia.'},
- {id:'P03',brand:'ANUA',name:'Heartleaf 77% Soothing Toner',cat:'Tónicos',price:115000,size:'250 ml',time:'Día y Noche',step:'Paso 3',img:IMG_BASE+'1db8f8eca-03a9-419c-a073-824926f48afc.png',
-  tagline:'77% de calma para tu piel.',
-  benefits:['Acción calmante: disminuye la rojez, la inflamación y el calor en rostros irritados o con brotes activos de acné.','Equilibrio de grasa y humedad: pH ligeramente ácido que optimiza el manto ácido de la piel y controla el exceso de grasa.','Hidratación ligera: su fórmula acuosa se absorbe de inmediato sin dejar residuos pegajosos, preparando la piel para los siguientes pasos.'],
-  usage:'Después de la limpieza, aplica con las manos limpias presionando suavemente, en lugar de arrastrar un algodón.'},
- {id:'P04',brand:'MEDICUBE',name:'Triple Collagen Toner 4.0',cat:'Tónicos',price:99900,size:'250 ml',time:'Día y Noche',step:'Paso 3',img:IMG_BASE+'11c480ac2-3731-4613-86dd-305f1f8d1664.png',
-  tagline:'Triple colágeno, triple glow: hidratación y elasticidad.',
-  benefits:['Hidrata intensamente.','Ayuda a mejorar la elasticidad.','Aporta luminosidad.','Deja la piel suave y flexible.'],
-  usage:'Aplica después de la limpieza con las manos limpias, presionando suavemente hasta su absorción.'},
- {id:'P05',brand:'PUREDERM',name:'Hyaluronic Acid Super Booster',cat:'Sérums y ampollas',price:59900,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'153adf841-3fee-4205-90e2-d3d25f154b40.png',
-  tagline:'Serum de ácido hialurónico: hidratación profunda.',
-  benefits:['Hidratación profunda.','Ayuda a mejorar la suavidad.','Aporta luminosidad.'],
-  usage:'Aplicar después del tónico sobre rostro y cuello limpios. Distribuir suavemente hasta su absorción y continuar con la crema hidratante. De día, finalizar con protector solar.'},
- {id:'P06',brand:'PUREDERM',name:'Niacinamide Super Booster',cat:'Sérums y ampollas',price:59900,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'1456d2479-b07d-4c8b-a84e-f1a9e240f25b.png',
-  tagline:'Serum de niacinamida: poros y tono uniforme.',
-  benefits:['Ayuda a mejorar la apariencia de los poros.','Ayuda a controlar el exceso de grasa y brillo.','Favorece un tono más uniforme y luminoso.'],
-  usage:'Aplicar después del tónico sobre rostro y cuello limpios. Distribuir suavemente hasta su absorción y continuar con la crema hidratante. De día, finalizar con protector solar.'},
- {id:'P07',brand:'GRACE & STELLA',name:'Vitamin C Super Booster',cat:'Sérums y ampollas',price:59900,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'1639397a6-81e1-4aba-bba7-0de403305326.png',
-  tagline:'Serum de vitamina C al 10%: luminosidad antioxidante.',
-  benefits:['Ayuda a iluminar la piel opaca.','Ayuda a unificar el tono.','Aporta acción antioxidante.'],
-  usage:'Aplicar después del tónico sobre rostro y cuello limpios. Distribuir suavemente hasta su absorción y continuar con la crema hidratante. De día, finalizar con protector solar.'},
- {id:'P08',brand:'SKIN1004',name:'Probio-Cica Intensive Ampoule',cat:'Sérums y ampollas',price:139900,size:'50 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'1fb7f24cf-fae6-4da8-a900-decc26c13dac.png',
-  tagline:'Ampolla calmante e hidratante para la barrera.',
-  benefits:['Aporta hidratación calmante.','Ayuda a fortalecer la barrera cutánea.','Calma y conforta la piel.','Ayuda a mejorar la firmeza y luminosidad.'],
-  usage:'Tras el tónico, aplica una cantidad adecuada sobre rostro y cuello. Distribuye suavemente y da ligeros toques hasta su absorción. Continúa con tu crema hidratante.'},
- {id:'P09',brand:'SKIN1004',name:'Poremizing Fresh Ampoule',cat:'Sérums y ampollas',price:59000,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'1029d8ee4-7f44-4b15-aa89-0d0cbdff5dce.png',
-  tagline:'Con Sal Rosa del Himalaya y 9 tipos de péptidos.',
-  benefits:['Minimiza visualmente los poros.','Ayuda a limpiar impurezas de los poros.','Hidratación ligera y refrescante.','Ayuda a mejorar elasticidad y textura.'],
-  usage:'Después del tónico, aplica una cantidad adecuada sobre rostro y cuello. Distribuye suavemente y da ligeros toques hasta su absorción. Continúa con tu crema hidratante.',
-  extra:['Con Sal Rosa del Himalaya','9 tipos de péptidos','Centella Asiática de Madagascar','No comedogénico · Mixta · Grasa · Sensible']},
- {id:'P10',brand:'SKIN1004',name:'Hyalu-Cica Moisture Cream',cat:'Cremas e hidratantes',price:109000,size:'75 ml',time:'Día y Noche',step:'Paso 5',img:IMG_BASE+'1f484b791-6c60-4772-a35c-407a9f98a60f.png',
-  tagline:'Crema hidratante con Ácido Hialurónico y Centella.',
-  benefits:['Hidratación profunda y duradera.','Calma e hidrata la piel seca y sensible.','Ayuda a mejorar la elasticidad de la piel.','Se absorbe fácilmente con acabado hidratante.'],
-  usage:'Como último paso de la rutina, aplica una cantidad adecuada sobre rostro y cuello. De día, continúa con protector solar.'},
- {id:'P11',brand:'MEDICUBE',name:'Collagen Jelly Cream',cat:'Cremas e hidratantes',price:119000,size:'110 ml',time:'Día y Noche',step:'Paso 5',img:IMG_BASE+'1b806592c-6efd-4d4c-8ab3-f191d7155d13.png',
-  tagline:'Crema en gel con colágeno y elastina.',
-  benefits:['Hidratación profunda con textura jelly ligera.','Aporta luminosidad y mejora el tono.','Mejora la firmeza y la elasticidad.','Fortalece la barrera cutánea.'],
-  usage:'Tras el sérum, aplica sobre rostro y cuello. Masajea suavemente hasta su absorción. De día, finaliza con protector solar.'},
- {id:'P12',brand:'MEDICUBE',name:'Deep Vita C Capsule Cream',cat:'Cremas e hidratantes',price:139000,size:'55 g',time:'Día y Noche',step:'Paso 5',img:IMG_BASE+'12842450f-b430-45c5-b1d1-3534959e2da8.png',
-  tagline:'Crema iluminadora e hidratante en cápsulas y gel.',
-  benefits:['Ilumina y revive la piel apagada.','Mejora la apariencia del tono desigual.','Aporta hidratación y luminosidad.','Innovadora fórmula en cápsulas y gel.'],
-  usage:'Mezcla cápsula y gel, aplica sobre rostro y cuello tras el sérum. De día, finaliza con protector solar.'},
- {id:'P13',brand:'MEDICUBE',name:'PDRN Capsule Cream 100',cat:'Cremas e hidratantes',price:121000,size:'50 ml',time:'Día y Noche',step:'Paso 5',img:IMG_BASE+'153b4ad7e-244e-4a72-b5a9-f06227514509.png',
-  tagline:'Crema en gel con cápsulas de PDRN.',
-  benefits:['Aporta hidratación y nutrición.','Ayuda a mejorar la apariencia de las arrugas.','Favorece una piel de apariencia más luminosa.','Fórmula de cápsulas con PDRN y gel hidratante.'],
-  usage:'Aplica una cantidad adecuada como último paso de la rutina y distribuye suavemente siguiendo la textura de la piel.'},
- {id:'P14',brand:'SKIN1004',name:'Hyalu-Cica Water-Fit Sun Serum',cat:'Protección solar',price:99000,size:'50 ml',time:'Día',step:'Paso 6',img:IMG_BASE+'1df457754-0657-4be5-801a-0ea200d94224.png',
-  tagline:'Protector solar SPF50+ PA++++ con acabado luminoso.',
-  benefits:['Protección UVA/UVB SPF50+ PA++++.','Hidrata con textura ligera y no pegajosa.','Calma y aporta confort a la piel.','Acabado luminoso, sin residuos blancos.'],
-  usage:'Como último paso de la rutina, aplica uniformemente sobre las zonas expuestas al sol, como rostro y cuello.'},
- {id:'P15',brand:'MEDIHEALTH',name:'Umbrella Acqua SPF50+',cat:'Protección solar',price:124800,size:'50 g',time:'Día',step:'Paso 6',img:IMG_BASE+'1359ec2da-e5f9-4dde-b28d-580dd0440451.png',
-  tagline:'Fórmula ligera acuosa, sin fragancia, hipoalergénica.',
-  benefits:['Textura ultraligera tipo agua de rápida absorción.','Alta protección solar diaria SPF50+.','Hidratación profunda y confortable.','Acabado invisible sin dejar residuos blancos.'],
-  usage:'Aplica sobre rostro y cuello antes de la exposición solar como último paso de tu rutina. Reaplica cada 2 a 3 horas.'},
- {id:'P16',brand:'SKIN REPUBLIC',name:'Parches para Ojeras y Bolsas',cat:'Contorno de ojos',price:59800,size:'60 parches',time:'Día y Noche',step:'Paso 7',img:IMG_BASE+'1c9f700d4-20fb-4453-b425-04f531396d00.png',
-  tagline:'Parches de hidrogel refrescantes e hidratantes.',
-  benefits:['Hidratación intensa para la zona del contorno.','Ayuda a disminuir ojeras, bolsas y fatiga.','Efecto refrescante y descongestionante inmediato.','Ayuda a revitalizar e iluminar la mirada.'],
-  usage:'Aplica sobre piel limpia y seca debajo de los ojos. Deja actuar de 15 a 20 minutos, retira y masajea suavemente el exceso de esencia.'},
- {id:'P17',brand:'VT',name:'PDRN Hydrogel Mask',cat:'Mascarillas',price:29900,size:'1 unidad · 33 g',time:'Día y Noche',step:'Tratamiento',img:IMG_BASE+'1708e9343-5054-4af5-ad76-8e831142c9a6.png',
-  tagline:'Mascarilla de hidrogel con PDRN vegetal de ginseng.',
-  benefits:['Hidratación profunda.','Ayuda a mejorar firmeza y elasticidad.','Ayuda a mantener la barrera y la hidratación.','Deja la piel más lisa y luminosa.'],
-  usage:'Después del tónico, aplica la mascarilla y ajústala al rostro. Déjala actuar de 20 a 40 minutos (intensivo: 2 a 3 h). Retira y da suaves toques para absorber la esencia restante.'},
- {id:'P18',brand:'MEDICUBE',name:'Collagen Night Wrapping Mask',cat:'Mascarillas',price:119000,size:'75 ml',time:'Noche',step:'Paso 8',img:IMG_BASE+'1930ee42d-3863-4ef6-a0bd-33a19b1d8c2f.png',
-  tagline:'Mascarilla nocturna de colágeno, 3–4 veces por semana.',
-  benefits:['Hidratación durante la noche.','Ayuda a mejorar la firmeza y elasticidad.','Ayuda a reducir visualmente líneas finas.','Ayuda a mantener la hidratación de la piel.'],
-  usage:'Como último paso de la rutina nocturna, aplica una capa uniforme evitando ojos y labios. Deja secar unos 15 minutos y duerme con la mascarilla. Por la mañana, retira la película o enjuaga con agua tibia.'},
- {id:'P19',brand:'BIODANCE',name:'Bio Collagen Real Deep Mask',cat:'Mascarillas',price:25000,size:'1 unidad · 34 g',time:'Día y Noche',step:'Tratamiento',img:IMG_BASE+'10da172a1-d479-46ec-8ca8-66184ea4e2a1.png',
-  tagline:'Mascarilla de hidrogel con colágeno para hidratación y glow.',
-  benefits:['Hidratación profunda y duradera.','Ayuda a minimizar la apariencia de los poros.','Ayuda a mejorar firmeza y elasticidad.','Aporta luminosidad y efecto glow.'],
-  usage:'Después de limpiar y tonificar, aplica y ajusta al rostro. Déjala actuar de 3 a 4 horas o hasta que se vuelva transparente; puede dejarse toda la noche. Retira y da suaves toques.'},
- {id:'P20',brand:'VT',name:'Reedle Shot 100',cat:'Tratamientos especiales',price:137000,size:'50 ml',time:'Noche',step:'Antes del tónico',img:IMG_BASE+'1f5601cab-d33a-4871-8699-c49b68be3cf0.png',
-  tagline:'Tratamiento facial con CICA REEDLE™ que prepara y potencia tu piel.',
-  benefits:['Potencia la absorción de la rutina.','Mejora la textura y suavidad.','Ayuda a unificar el tono.','Favorece una piel más lisa y luminosa.'],
-  usage:'Por la noche, después de la limpieza y sobre el rostro seco, aplica una cantidad adecuada y distribuye suavemente hasta su absorción. Continúa con tónico, sérum y crema.',
-  warn:'Puede producir sensación de hormigueo durante la aplicación. No usar sobre piel lesionada, después de procedimientos dermatológicos, ni junto con Reedle Shot 300 o 700 en la misma rutina.'},
- {id:'P21',brand:'ANUA',name:'Rice 7 + Ceramide Hydrating Barrier Serum',cat:'Sérums y ampollas',price:0,size:'50 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'14ed89582-e071-49a3-a499-e12d779ed526.png',
-  tagline:'Repara y fortalece la barrera de tu piel.',
-  benefits:['Extractos de Arroz: rico en aminoácidos y antioxidantes que nutren e iluminan la piel.','Ceramidas: retienen la hidratación intracelular.','Niacinamida (3%): regula la grasa y unifica el tono.','Ácido Hialurónico: hidratación multicapa.'],
-  usage:'Después del tónico, aplica de dos a tres gotas sobre rostro y cuello. Distribuye suavemente hasta su absorción y continúa con tu crema hidratante. De día, finaliza con protector solar.'},
- {id:'P22',brand:'ANUA',name:'Peach 70+ Niacin Serum',cat:'Sérums y ampollas',price:0,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'1ce7a3303-9b16-4c94-9bc5-61de1a71f024.png',
-  tagline:'Lo que necesita tu piel para tener el efecto glass skin.',
-  benefits:['70% Extracto de Durazno (Melocotón): nutre la piel con antioxidantes y vitaminas que devuelven la vitalidad.','5% Niacinamida: aclara manchas, unifica el tono y refina los poros.','Triple Ácido Hialurónico: hidratación duradera.','Vitamina B12: aporta el tono rosado natural al suero (sin colorantes artificiales) y promueve una barrera sana.'],
-  usage:'Después del tónico, aplica de dos a tres gotas sobre rostro y cuello. Distribuye suavemente hasta su absorción y continúa con tu crema hidratante. De día, finaliza con protector solar.'},
- {id:'P23',brand:'ANUA',name:'Rice 70 + Ceramide Glow Milky Toner',cat:'Tónicos',price:0,size:'250 ml',time:'Día y Noche',step:'Paso 3',img:IMG_BASE+'1296b375e-8ab6-4ca8-803e-e02a1772bf44.png',
-  tagline:'Hidratación profunda, glow que se nota.',
-  benefits:['70% de agua de salvado de arroz: suaviza la textura áspera y da vitalidad.','Niacinamida: unifica el tono y controla la producción de grasa.','Ceramidas: refuerzan la barrera natural de la piel y evitan la pérdida de humedad.','Pantenol, Glicerina y Alantoína: calman la irritación y aportan confort instantáneo.'],
-  usage:'Después de la limpieza, aplica con las manos limpias presionando suavemente. Continúa con tu sérum y crema hidratante.'},
- {id:'P24',brand:'ANUA',name:'Azelaic Acid 10+ Hyaluron Redness Soothing Serum',cat:'Sérums y ampollas',price:0,size:'30 ml',time:'Día y Noche',step:'Paso 4',img:IMG_BASE+'12a92f070-40c1-481a-920a-871254c2bfbf.png',
-  tagline:'Menos rojeces, más piel uniforme y luminosa.',
-  benefits:['Ácido Azelaico (10%): propiedades antiinflamatorias y antibacterianas.','Ácido Hialurónico: aporta hidratación profunda sin dejar sensación pesada.','Complejo Cica y Aloe Vera: alivian de inmediato la irritación y refuerzan la barrera de la piel.','Niacinamida y Salicilato de Betaína: ayudan a regular el exceso de grasa y mantienen los poros limpios.'],
-  usage:'Después del tónico, aplica de dos a tres gotas sobre rostro y cuello. Distribuye suavemente hasta su absorción y continúa con tu crema hidratante. De día, finaliza con protector solar.'}
-];
-
-var ROUTINE = [
+const ROUTINE = [
  {n:'01',title:'Limpieza oleosa',am:false,pm:true,icon:'oil',desc:'Una textura envolvente que disuelve protector solar, maquillaje, exceso de grasa e impurezas oleosas sin frotar de más. La piel queda limpia, suave y preparada para continuar el ritual.',uso:'PM · Primer paso de la doble limpieza',tip:'Masajea sobre el rostro seco durante 30 a 60 segundos. Agrega un poco de agua, emulsiona hasta obtener una textura lechosa y enjuaga.'},
  {n:'02',title:'Limpieza acuosa',am:true,pm:true,icon:'foam',desc:'Completa la limpieza retirando sudor, residuos y partículas a base de agua. Su espuma delicada deja una sensación fresca y confortable, sin comprometer la barrera natural.',uso:'AM y PM',tip:'Aplica sobre el rostro húmedo y masajea suavemente. Evita utilizar agua demasiado caliente para no favorecer la resequedad.'},
  {n:'03',title:'Tónico',am:true,pm:true,icon:'wave',desc:'Devuelve confort después de la limpieza, ayuda a equilibrar la piel y crea una base hidratada para recibir mejor los tratamientos posteriores.',uso:'AM y PM · Con las manos limpias',tip:'Presiona suavemente con las manos limpias en lugar de arrastrar un algodón. Para mayor hidratación, aplica una segunda capa ligera.'},
@@ -817,33 +600,9 @@ var ROUTINE = [
  {n:'06',title:'Protector solar',am:true,pm:false,icon:'sun',desc:'El último paso de la mañana protege la piel frente a la radiación UV y ayuda a prevenir manchas, tono irregular y signos visibles de envejecimiento prematuro.',uso:'AM · Último paso de la rutina diurna',tip:'Aplica una cantidad generosa en rostro, cuello y zonas expuestas. Reaplica durante el día, especialmente ante exposición solar, sudor o humedad.'},
  {n:'07',title:'Tratamiento especial',am:false,pm:true,icon:'spark',desc:'VT Reedle Shot 100: un paso nocturno intensivo que complementa la rutina y prepara la piel para recibir los productos posteriores. Su sensación característica lo convierte en un ritual avanzado.',uso:'PM · Antes del tónico, sobre piel limpia',tip:'Comienza con poca cantidad y ajusta la frecuencia según la tolerancia de tu piel. Evita combinarlo en la misma rutina con exfoliantes intensos o activos fuertes.'}
 ];
-
-/* ================= ESTADO ================= */
-var state = { view:'inicio', cat:null, brand:'', q:'', rf:'all' };
-var pendingImage=null, editingId=null, editingIsSeed=false;
-var batchQueue=[], batchNewQueue=[], batchPendingFiles=[], batchProcessing=false;
-var imgForTargetId=null;
-
-function allProducts(){
-  var seeds = SEED.filter(function(p){ return removedSeeds.indexOf(p.id) === -1; })
-    .map(function(p){ return seedEdits[p.id] ? Object.assign({}, p, seedEdits[p.id]) : p; });
-  return seeds.concat(addedProducts);
-}
-function categoryNames(prods){
-  var base = CATEGORIES.map(function(c){ return c.nombre; });
-  var custom = [];
-  prods.forEach(function(p){ if(base.indexOf(p.cat) === -1 && custom.indexOf(p.cat) === -1) custom.push(p.cat); });
-  return base.concat(custom);
-}
-function accentFor(name){ var c=null; for(var i=0;i<CATEGORIES.length;i++){ if(CATEGORIES[i].nombre===name){ c=CATEGORIES[i]; break; } } return c?c.accent:'#B8872C'; }
-function descFor(name){ var c=null; for(var i=0;i<CATEGORIES.length;i++){ if(CATEGORIES[i].nombre===name){ c=CATEGORIES[i]; break; } } return c?c.desc:'Nuevos productos de la colección YUWA'; }
-function isSeedId(id){ return SEED.some(function(p){ return p.id === id; }); }
-function hasOwnImage(p){ return p.custom ? true : !!(seedEdits[p.id] && seedEdits[p.id].img); }
-
-/* ================= ICONOS ================= */
-var ICON_SUN = '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="5.3" y1="18.7" x2="7" y2="17"/><line x1="17" y1="7" x2="18.7" y2="5.3"/></g></svg>';
-var ICON_MOON = '<svg class="ic" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>';
-var STEP_ICONS = {
+const ICON_SUN = '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="5.3" y1="18.7" x2="7" y2="17"/><line x1="17" y1="7" x2="18.7" y2="5.3"/></g></svg>';
+const ICON_MOON = '<svg class="ic" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>';
+const STEP_ICONS = {
  oil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3.2 4.6 6 7.7 6 11a6 6 0 1 1-12 0c0-3.3 2.8-6.4 6-11z"/></svg>',
  foam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="10" r="4"/><circle cx="15.5" cy="13.5" r="3"/><circle cx="10.5" cy="16.5" r="2.4"/></svg>',
  wave:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2"/><path d="M4 14c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2"/></svg>',
@@ -852,191 +611,172 @@ var STEP_ICONS = {
  sun:ICON_SUN.replace('class="ic"',''),
  spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>'
 };
-function timeIcons(t){
-  var out='';
-  if(String(t).indexOf('Día')!==-1) out+=ICON_SUN;
-  if(String(t).indexOf('Noche')!==-1) out+=ICON_MOON;
-  return out;
+const timeIcons = t => (String(t).indexOf('Día')!==-1?ICON_SUN:'') + (String(t).indexOf('Noche')!==-1?ICON_MOON:'');
+const accentFor = name => { const c = CATEGORIES.find(x=>x.nombre===name); return c ? c.accent : '#B8872C'; };
+const descFor = name => { const c = CATEGORIES.find(x=>x.nombre===name); return c ? c.desc : 'Nuevos productos de la colección YUWA'; };
+
+/* ================= ESTADO ================= */
+const state = { view:'inicio', cat:null, brand:'', q:'', rf:'all', products:[], loaded:false, admin:false };
+let editingId = null;
+let pendingFile = null;
+
+const visibleProducts = () => state.products.filter(p => state.admin || p.activo !== false);
+function categoryNames(prods){
+  const base = CATEGORIES.map(c=>c.nombre);
+  const custom = [];
+  prods.forEach(p => { if(base.indexOf(p.cat)===-1 && custom.indexOf(p.cat)===-1) custom.push(p.cat); });
+  return base.concat(custom);
+}
+
+/* ================= LECTURA DESDE SUPABASE ================= */
+async function cargarProductos(){
+  if(!sb){ state.loaded = true; renderView(); return; }
+  const { data, error } = await sb
+    .from('products')
+    .select('*, usos_sugeridos(texto, orden)')
+    .order('marca').order('nombre');
+  if(error){ toast('Error Supabase: ' + error.message); state.loaded = true; renderView(); return; }
+  state.products = (data || []).map(p => ({
+    id:p.id, name:p.nombre, tagline:p.descripcion || '', brand:p.marca,
+    price:Number(p.precio_cop || 0), cat:p.categoria, size:p.tamano || '',
+    time:p.momento_uso || 'Día y Noche', step:p.paso_rutina || 'Tratamiento',
+    img:p.imagen_url || PLACEHOLDER_IMG, benefits:p.beneficios || [],
+    usos:(p.usos_sugeridos || []).sort((a,b)=>(a.orden||0)-(b.orden||0)).map(u=>u.texto),
+    activo:p.activo !== false
+  }));
+  state.loaded = true;
+  renderView();
+}
+
+/* ================= AUTENTICACIÓN ================= */
+async function refreshAuth(){
+  if(!sb){ updateAuthUI(); return; }
+  const { data } = await sb.auth.getSession();
+  state.admin = !!(data && data.session);
+  updateAuthUI();
+  if(state.admin) await cargarProductos();
+}
+function updateAuthUI(){
+  const dot = $('#sbDot');
+  if(dot) dot.classList.toggle('on', !!sb);
+  const help = $('#sbHelp');
+  if(help) help.innerHTML = SB_CONFIGURADO
+    ? (sb ? 'Conectado a <b>' + esc(SUPABASE_URL.replace('https://','')) + '</b>. ' + (state.admin ? 'Sesión admin activa ✓' : 'Inicia sesión para gestionar.') : 'No se pudo iniciar el cliente Supabase.')
+    : '⚠️ Configura <b>SUPABASE_URL</b> y <b>SUPABASE_ANON_KEY</b> al inicio del &lt;script&gt; de este index.html y súbelo de nuevo a GitHub.';
+  $('#loginCard').hidden = state.admin;
+  $('#adminTools').hidden = !state.admin;
+  $('#logoutBtn').hidden = !state.admin;
+  $('#loginBtn').hidden = state.admin;
+}
+async function loginAdmin(){
+  if(!sb){ toast('Configura Supabase primero.'); return; }
+  const email = $('#loginEmail').value.trim();
+  const pass = $('#loginPass').value;
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){ toast('Credenciales inválidas.'); return; }
+  toast('Sesión admin iniciada ✓');
+  await refreshAuth();
+  renderAdmin();
+}
+async function logoutAdmin(){
+  if(sb) await sb.auth.signOut();
+  state.admin = false;
+  toast('Sesión cerrada.');
+  await cargarProductos();
+  updateAuthUI();
 }
 
 /* ================= NAVEGACIÓN ================= */
-var VIEWS = ['inicio','contenido','rutina','catalogo','contacto','admin'];
+const VIEWS = ['inicio','contenido','rutina','catalogo','contacto','admin'];
 function go(view, opts){
   opts = opts || {};
   if(opts.cat !== undefined) state.cat = opts.cat;
-  if(opts.cat){ state.brand=''; state.q=''; var si=$('#searchInput'); if(si) si.value=''; }
+  if(opts.cat){ state.brand=''; state.q=''; const si=$('#searchInput'); if(si) si.value=''; }
   state.view = view;
   renderView(); syncHash(view); safeScrollTop();
-  var nav=$('#mainNav'); if(nav) nav.classList.remove('open');
+  const nav=$('#mainNav'); if(nav) nav.classList.remove('open');
 }
 function renderView(){
-  VIEWS.forEach(function(v){ var el=document.getElementById('view-'+v); if(el) el.classList.toggle('on', v===state.view); });
-  $all('.mainnav button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-goto')===state.view); });
+  VIEWS.forEach(v => { const el = document.getElementById('view-'+v); if(el) el.classList.toggle('on', v===state.view); });
+  $all('.mainnav button').forEach(b => b.classList.toggle('active', b.getAttribute('data-goto')===state.view));
+  if(state.view==='inicio') renderHeroStats();
   if(state.view==='contenido') renderTOC();
   if(state.view==='rutina') renderRoutine();
   if(state.view==='catalogo') renderCatalog();
-  if(state.view==='admin') renderAdmin();
-  if(state.view==='inicio') renderHeroStats();
+  if(state.view==='admin'){ updateAuthUI(); renderAdmin(); }
   observeReveals();
 }
-document.addEventListener('click', function(e){
-  var g = e.target.closest ? e.target.closest('[data-goto]') : null;
-  if(g){ go(g.getAttribute('data-goto')); }
-});
-window.addEventListener('hashchange', function(){
-  var h=''; try{ h=location.hash.replace('#',''); }catch(e){}
-  if(VIEWS.indexOf(h)!==-1 && h!==state.view){ state.view=h; renderView(); }
-});
-
-/* ================= LIGHTBOX ZOOM ================= */
-var lbImgEl=null, lbStageEl=null;
-var lb = { s:1, tx:0, ty:0 };
-var lbPointers = {};
-var lbPinch = null;
-var lbDragging = false;
-var lbLast = null;
-function lbApply(){ if(lbImgEl) lbImgEl.style.transform = 'translate('+lb.tx+'px,'+lb.ty+'px) scale('+lb.s+')'; }
-function lbResetZoom(){ lb.s=1; lb.tx=0; lb.ty=0; lbApply(); }
-function lbZoomBy(f){ lb.s = Math.min(6, Math.max(1, lb.s*f)); if(lb.s===1){ lb.tx=0; lb.ty=0; } lbApply(); }
-function openLightbox(src){
-  if(!src) return;
-  lbImgEl = $('#lbImg'); lbStageEl = $('#lbStage');
-  lbImgEl.src = src;
-  lbResetZoom();
-  $('#lightbox').hidden = false;
-  document.body.style.overflow = 'hidden';
-}
-function closeLightbox(){
-  var l=$('#lightbox'); if(l) l.hidden = true;
-  document.body.style.overflow = '';
-  lbPointers={}; lbPinch=null; lbDragging=false;
-}
-function lbPointDist(){
-  var ks = Object.keys(lbPointers);
-  if(ks.length < 2) return 0;
-  var a = lbPointers[ks[0]], b = lbPointers[ks[1]];
-  return Math.hypot(a[0]-b[0], a[1]-b[1]);
-}
-document.addEventListener('click', function(e){
-  var z = e.target.closest ? e.target.closest('[data-zoom]') : null;
-  if(z){ e.stopPropagation(); e.preventDefault(); openLightbox(z.getAttribute('data-zoom')); }
-}, true);
-(function initLightbox(){
-  var stage = $('#lbStage');
-  if(!stage) return;
-  stage.addEventListener('pointerdown', function(e){
-    lbPointers[e.pointerId] = [e.clientX, e.clientY];
-    try{ stage.setPointerCapture(e.pointerId); }catch(err){}
-    if(Object.keys(lbPointers).length === 2){ lbPinch = { d: lbPointDist(), s: lb.s }; }
-    else { lbDragging = true; lbLast = [e.clientX, e.clientY]; lbImgEl.classList.add('dragging'); }
-  });
-  stage.addEventListener('pointermove', function(e){
-    if(!lbPointers[e.pointerId]) return;
-    lbPointers[e.pointerId] = [e.clientX, e.clientY];
-    if(Object.keys(lbPointers).length === 2 && lbPinch){
-      var d = lbPointDist();
-      if(lbPinch.d > 0){ lb.s = Math.min(6, Math.max(1, lbPinch.s * (d / lbPinch.d))); lbApply(); }
-    } else if(lbDragging && lbLast && lb.s > 1){
-      lb.tx += e.clientX - lbLast[0];
-      lb.ty += e.clientY - lbLast[1];
-      lbLast = [e.clientX, e.clientY];
-      lbApply();
-    }
-  });
-  function lbEnd(e){
-    delete lbPointers[e.pointerId];
-    if(Object.keys(lbPointers).length < 2) lbPinch = null;
-    if(Object.keys(lbPointers).length === 0){ lbDragging=false; if(lbImgEl) lbImgEl.classList.remove('dragging'); }
-    lbLast = null;
-  }
-  stage.addEventListener('pointerup', lbEnd);
-  stage.addEventListener('pointercancel', lbEnd);
-  stage.addEventListener('wheel', function(e){ e.preventDefault(); lbZoomBy(e.deltaY < 0 ? 1.18 : 0.85); }, {passive:false});
-  stage.addEventListener('dblclick', function(e){
-    e.preventDefault();
-    if(lb.s > 1){ lbResetZoom(); } else { lb.s = 2.6; lbApply(); }
-  });
-  $('#lbIn').addEventListener('click', function(){ lbZoomBy(1.3); });
-  $('#lbOut').addEventListener('click', function(){ lbZoomBy(0.75); });
-  $('#lbReset').addEventListener('click', lbResetZoom);
-  $('#lbClose').addEventListener('click', closeLightbox);
-  $all('[data-lb-close]').forEach(function(el){ el.addEventListener('click', closeLightbox); });
-})();
+document.addEventListener('click', e => { const g = e.target.closest ? e.target.closest('[data-goto]') : null; if(g) go(g.getAttribute('data-goto')); });
+window.addEventListener('hashchange', () => { const h = location.hash.replace('#',''); if(VIEWS.indexOf(h)!==-1 && h!==state.view){ state.view=h; renderView(); } });
 
 /* ================= HERO / TOC ================= */
 function renderHeroStats(){
-  var prods=allProducts(); var cats=categoryNames(prods);
-  var el=$('#heroStats');
-  if(el) el.innerHTML='<span><b>'+prods.length+'</b> productos</span><span><b>'+cats.length+'</b> categorías</span><span>Envíos a <b>toda Colombia</b></span>';
+  const prods = visibleProducts();
+  const cats = categoryNames(prods);
+  const el = $('#heroStats');
+  if(el) el.innerHTML = '<span><b>'+prods.length+'</b> productos</span><span><b>'+cats.length+'</b> categorías</span><span>Envíos a <b>toda Colombia</b></span>';
 }
 function renderTOC(){
-  var prods=allProducts(); var cats=categoryNames(prods);
-  var html='';
-  html+='<button class="toc-row reveal" data-toc="rutina" style="--acc:#526B5B"><span class="toc-num">01</span><span class="toc-main"><h3>Guía de rutina</h3><p>Orden de aplicación y consejos de uso AM / PM</p></span><span class="toc-count">7 pasos</span><span class="toc-arrow">→</span></button>';
-  cats.forEach(function(name,i){
-    var count=prods.filter(function(p){ return p.cat===name; }).length;
-    var num=i+2;
-    html+='<button class="toc-row reveal" data-toc-cat="'+esc(name)+'" style="--acc:'+accentFor(name)+'"><span class="toc-num">'+pad2(num)+'</span><span class="toc-main"><h3>'+esc(name)+'</h3><p>'+esc(descFor(name))+'</p></span><span class="toc-count">'+count+' '+(count===1?'producto':'productos')+'</span><span class="toc-arrow">→</span></button>';
+  const prods = visibleProducts();
+  const cats = categoryNames(prods);
+  let html = '<button class="toc-row reveal" data-toc="rutina" style="--acc:#526B5B"><span class="toc-num">01</span><span class="toc-main"><h3>Guía de rutina</h3><p>Orden de aplicación y consejos de uso AM / PM</p></span><span class="toc-count">7 pasos</span><span class="toc-arrow">→</span></button>';
+  cats.forEach((name,i)=>{
+    const count = prods.filter(p=>p.cat===name).length;
+    html += '<button class="toc-row reveal" data-toc-cat="'+esc(name)+'" style="--acc:'+accentFor(name)+'"><span class="toc-num">'+pad2(i+2)+'</span><span class="toc-main"><h3>'+esc(name)+'</h3><p>'+esc(descFor(name))+'</p></span><span class="toc-count">'+count+' '+(count===1?'producto':'productos')+'</span><span class="toc-arrow">→</span></button>';
   });
-  var lastN=cats.length+2;
-  html+='<button class="toc-row reveal" data-toc="contacto" style="--acc:#B8872C"><span class="toc-num">'+pad2(lastN)+'</span><span class="toc-main"><h3>Pedidos y contacto</h3><p>Disponibilidad, pedidos y asesoría</p></span><span class="toc-count">WhatsApp · IG</span><span class="toc-arrow">→</span></button>';
-  var zone=$('#tocList'); if(!zone) return;
-  zone.innerHTML=html;
-  $all('[data-toc]').forEach(function(b){ if(zone.contains(b)) b.addEventListener('click', function(){ go(b.getAttribute('data-toc')); }); });
-  $all('[data-toc-cat]').forEach(function(b){ if(zone.contains(b)) b.addEventListener('click', function(){ go('catalogo',{cat:b.getAttribute('data-toc-cat')}); }); });
+  html += '<button class="toc-row reveal" data-toc="contacto" style="--acc:#B8872C"><span class="toc-num">'+pad2(cats.length+2)+'</span><span class="toc-main"><h3>Pedidos y contacto</h3><p>Disponibilidad, pedidos y asesoría</p></span><span class="toc-count">WhatsApp · IG</span><span class="toc-arrow">→</span></button>';
+  const zone = $('#tocList'); if(!zone) return;
+  zone.innerHTML = html;
+  $all('[data-toc]').forEach(b => { if(zone.contains(b)) b.addEventListener('click', ()=>go(b.getAttribute('data-toc'))); });
+  $all('[data-toc-cat]').forEach(b => { if(zone.contains(b)) b.addEventListener('click', ()=>go('catalogo',{cat:b.getAttribute('data-toc-cat')})); });
   observeReveals();
 }
 
 /* ================= RUTINA ================= */
 function renderRoutine(){
-  var grid=$('#routineGrid'); if(!grid) return;
-  grid.innerHTML=ROUTINE.map(function(s){
-    var dim=(state.rf==='am'&&!s.am)||(state.rf==='pm'&&!s.pm);
-    var usoTxt=(s.am&&s.pm)?'Día y Noche':(s.am?'Día':'Noche');
+  const grid = $('#routineGrid'); if(!grid) return;
+  grid.innerHTML = ROUTINE.map(s => {
+    const dim = (state.rf==='am' && !s.am) || (state.rf==='pm' && !s.pm);
+    const usoTxt = (s.am&&s.pm)?'Día y Noche':(s.am?'Día':'Noche');
     return '<article class="step-card reveal'+(dim?' dim':'')+'"><div class="step-top"><span class="step-ico">'+(STEP_ICONS[s.icon]||STEP_ICONS.spark)+'</span><span class="step-num">'+s.n+'</span></div><h3>'+s.title+'</h3><p class="s-desc">'+s.desc+'</p><span class="step-use">'+timeIcons(usoTxt)+s.uso+'</span><div class="step-tip"><b>Beauty tip</b>'+s.tip+'</div></article>';
   }).join('');
   observeReveals();
 }
-$all('.rt-btn').forEach(function(b){
-  b.addEventListener('click', function(){
-    state.rf=b.getAttribute('data-rf');
-    $all('.rt-btn').forEach(function(x){ x.classList.toggle('active', x===b); });
-    renderRoutine();
-  });
-});
+$all('.rt-btn').forEach(b => b.addEventListener('click', ()=>{
+  state.rf = b.getAttribute('data-rf');
+  $all('.rt-btn').forEach(x=>x.classList.toggle('active', x===b));
+  renderRoutine();
+}));
 
 /* ================= CATÁLOGO ================= */
 function filteredProducts(){
-  var list=allProducts();
-  if(state.cat) list=list.filter(function(p){ return p.cat===state.cat; });
-  if(state.brand) list=list.filter(function(p){ return p.brand===state.brand; });
-  if(state.q){ var q=state.q.toLowerCase(); list=list.filter(function(p){ return (p.name+' '+p.brand+' '+p.cat).toLowerCase().indexOf(q)!==-1; }); }
+  let list = visibleProducts();
+  if(state.cat) list = list.filter(p=>p.cat===state.cat);
+  if(state.brand) list = list.filter(p=>p.brand===state.brand);
+  if(state.q){ const q=state.q.toLowerCase(); list = list.filter(p=>(p.name+' '+p.brand+' '+p.cat).toLowerCase().indexOf(q)!==-1); }
   return list;
 }
 function renderCatalog(){
-  var prods=allProducts(); var cats=categoryNames(prods);
-  var chipsHtml='<button class="chip'+(!state.cat?' active':'')+'" data-chip="">Todas</button>';
-  cats.forEach(function(c){ chipsHtml+='<button class="chip'+(state.cat===c?' active':'')+'" data-chip="'+esc(c)+'">'+esc(c)+'</button>'; });
-  var chipsZone=$('#catChips');
-  if(chipsZone){
-    chipsZone.innerHTML=chipsHtml;
-    $all('.chip').forEach(function(ch){ if(chipsZone.contains(ch)) ch.addEventListener('click', function(){ state.cat=ch.getAttribute('data-chip')||null; renderCatalog(); }); });
-  }
-  var brands=[]; prods.forEach(function(p){ if(brands.indexOf(p.brand)===-1) brands.push(p.brand); });
-  brands.sort();
-  var bs=$('#brandSelect');
-  if(bs){
-    var prev=state.brand;
-    bs.innerHTML='<option value="">Todas las marcas</option>'+brands.map(function(b){ return '<option value="'+esc(b)+'">'+esc(b)+'</option>'; }).join('');
-    bs.value=brands.indexOf(prev)!==-1?prev:'';
-    state.brand=bs.value;
-  }
+  const prods = visibleProducts();
+  const cats = categoryNames(prods);
+  const chipsZone = $('#catChips');
+  if(!state.loaded){ $('#catalogBody').innerHTML = '<div class="loading">Cargando productos desde Supabase…</div>'; return; }
+  if(!sb){ $('#catalogBody').innerHTML = '<div class="empty-state"><h3>Catálogo sin conectar</h3><p>Configura SUPABASE_URL y SUPABASE_ANON_KEY al inicio del script de index.html.</p></div>'; return; }
+  let chipsHtml = '<button class="chip'+(!state.cat?' active':'')+'" data-chip="">Todas</button>';
+  cats.forEach(c => { chipsHtml += '<button class="chip'+(state.cat===c?' active':'')+'" data-chip="'+esc(c)+'">'+esc(c)+'</button>'; });
+  chipsZone.innerHTML = chipsHtml;
+  $all('.chip').forEach(ch => { if(chipsZone.contains(ch)) ch.addEventListener('click', ()=>{ state.cat = ch.getAttribute('data-chip')||null; renderCatalog(); }); });
+  const brands = []; prods.forEach(p=>{ if(brands.indexOf(p.brand)===-1) brands.push(p.brand); }); brands.sort();
+  const bs = $('#brandSelect');
+  const prev = state.brand;
+  bs.innerHTML = '<option value="">Todas las marcas</option>' + brands.map(b=>'<option value="'+esc(b)+'">'+esc(b)+'</option>').join('');
+  bs.value = brands.indexOf(prev)!==-1 ? prev : '';
+  state.brand = bs.value;
   renderCatalogBody();
 }
 function buildCard(p){
-  var imgSrc=p.img||PLACEHOLDER_IMG;
   return '<article class="p-card reveal" data-pid="'+esc(p.id)+'">'+
-    '<div class="p-arch" data-zoom="'+esc(imgSrc)+'" title="Toca para ampliar"><img src="'+esc(imgSrc)+'" alt="'+esc(p.name)+'" loading="lazy">'+
+    '<div class="p-arch" data-zoom="'+esc(p.img)+'" title="Toca para ampliar"><img src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">'+
     '<span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg></span></div>'+
     '<div class="p-body"><p class="p-brand">'+esc(p.brand)+'</p><h3 class="p-name">'+esc(p.name)+'</h3>'+
     '<p class="p-meta">'+esc(p.cat)+' · '+esc(p.size)+'</p>'+
@@ -1045,684 +785,443 @@ function buildCard(p){
     '</article>';
 }
 function renderCatalogBody(){
-  var list=filteredProducts(); var body=$('#catalogBody'); if(!body) return;
-  var grouping=!state.cat&&!state.brand&&!state.q;
-  if(list.length===0){
-    body.innerHTML='<div class="empty-state"><h3>Sin resultados</h3><p>No encontramos productos con esos filtros.</p><br><button class="btn-ghost" id="clearFilters">Limpiar filtros</button></div>';
-    var cf=$('#clearFilters'); if(cf) cf.addEventListener('click', clearAllFilters);
+  const list = filteredProducts();
+  const body = $('#catalogBody'); if(!body) return;
+  if(!list.length){
+    body.innerHTML = '<div class="empty-state"><h3>Sin resultados</h3><p>Aún no hay productos publicados en esta vista.</p></div>';
     return;
   }
-  var html='';
+  const grouping = !state.cat && !state.brand && !state.q;
+  let html = '';
   if(grouping){
-    var cats=categoryNames(allProducts()); var idx=0;
-    cats.forEach(function(catName){
-      var items=list.filter(function(p){ return p.cat===catName; });
+    const cats = categoryNames(visibleProducts()); let idx=0;
+    cats.forEach(catName => {
+      const items = list.filter(p=>p.cat===catName);
       if(!items.length) return;
       idx++;
-      html+='<div class="cat-section"><div class="cat-head" style="--acc:'+accentFor(catName)+'"><span class="num">'+pad2(idx)+'</span><div><h3>'+esc(catName)+'</h3></div><span class="bar"></span><p>'+esc(descFor(catName))+'</p></div><div class="p-grid">'+items.map(buildCard).join('')+'</div></div>';
+      html += '<div class="cat-section"><div class="cat-head" style="--acc:'+accentFor(catName)+'"><span class="num">'+pad2(idx)+'</span><div><h3>'+esc(catName)+'</h3></div><span class="bar"></span><p>'+esc(descFor(catName))+'</p></div><div class="p-grid">'+items.map(buildCard).join('')+'</div></div>';
     });
   } else {
-    html='<div class="result-line"><span>'+list.length+' '+(list.length===1?'producto':'productos')+(state.cat?' en <b style="color:var(--gold)">'+esc(state.cat)+'</b>':'')+'</span><button class="btn-ghost" id="clearFilters">Limpiar filtros</button></div><div class="p-grid">'+list.map(buildCard).join('')+'</div>';
+    html = '<div class="result-line"><span>'+list.length+' '+(list.length===1?'producto':'productos')+(state.cat?' en <b style="color:var(--gold)">'+esc(state.cat)+'</b>':'')+'</span></div><div class="p-grid">'+list.map(buildCard).join('')+'</div>';
   }
-  body.innerHTML=html;
-  var cf2=$('#clearFilters'); if(cf2) cf2.addEventListener('click', clearAllFilters);
-  $all('.p-card').forEach(function(card){ if(body.contains(card)) card.addEventListener('click', function(){ openModal(card.getAttribute('data-pid')); }); });
+  body.innerHTML = html;
+  $all('.p-card').forEach(card => { if(body.contains(card)) card.addEventListener('click', ()=>openModal(card.getAttribute('data-pid'))); });
   observeReveals();
 }
-function clearAllFilters(){ state.cat=null; state.brand=''; state.q=''; var si=$('#searchInput'); if(si) si.value=''; renderCatalog(); }
 
 /* ================= MODAL ================= */
-function findProduct(id){ var list=allProducts(); for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i]; } return null; }
+const findProduct = id => visibleProducts().find(p=>p.id===id) || (state.admin ? state.products.find(p=>p.id===id) : null);
 function openModal(id){
-  var p=findProduct(id); if(!p) return;
-  var imgSrc=p.img||PLACEHOLDER_IMG;
-  var img=$('#mImg'); if(img){ img.src=imgSrc; img.alt=p.name; }
-  var frame=$('#modalFrame'); if(frame) frame.setAttribute('data-zoom', imgSrc);
-  var info=$('#modalInfo'); if(!info) return;
-  var html='<p class="m-brand">'+esc(p.brand)+'</p><h3 class="m-name">'+esc(p.name)+'</h3>'+
+  const p = findProduct(id); if(!p) return;
+  const img = $('#mImg'); if(img){ img.src = p.img; img.alt = p.name; }
+  const frame = $('#modalFrame'); if(frame) frame.setAttribute('data-zoom', p.img);
+  const info = $('#modalInfo'); if(!info) return;
+  let html = '<p class="m-brand">'+esc(p.brand)+'</p><h3 class="m-name">'+esc(p.name)+'</h3>'+
     (p.tagline?'<p class="m-desc">'+esc(p.tagline)+'</p>':'')+
     '<div class="m-meta"><span class="m-tag gold">'+esc(p.cat)+'</span><span class="m-tag">'+esc(p.size)+'</span><span class="m-tag">'+esc(p.step)+'</span></div>'+
     '<div class="m-price">'+fmtPrice(p.price)+'</div>';
-  if(p.benefits&&p.benefits.length){ html+='<div class="m-block"><h4>Beneficios</h4><ul>'+p.benefits.map(function(b){ return '<li>'+esc(b)+'</li>'; }).join('')+'</ul></div>'; }
-  if(p.extra&&p.extra.length){ html+='<div class="m-block"><h4>Fórmula consciente</h4><ul>'+p.extra.map(function(b){ return '<li>'+esc(b)+'</li>'; }).join('')+'</ul></div>'; }
-  if(p.usage){ html+='<div class="m-block"><h4>Uso sugerido</h4><div class="m-usage">'+esc(p.usage)+'</div></div>'; }
-  if(p.warn){ html+='<div class="m-warn"><b>Advertencias:</b> '+esc(p.warn)+'</div>'; }
-  html+='<div class="m-foot"><span class="m-routine">'+timeIcons(p.time)+esc(p.time)+' · '+esc(p.step)+'</span>'+
+  if(p.benefits && p.benefits.length) html += '<div class="m-block"><h4>Beneficios</h4><ul>'+p.benefits.map(b=>'<li>'+esc(b)+'</li>').join('')+'</ul></div>';
+  if(p.usos && p.usos.length) html += '<div class="m-block"><h4>Uso sugerido</h4><ul>'+p.usos.map(u=>'<li>'+esc(u)+'</li>').join('')+'</ul></div>';
+  html += '<div class="m-foot"><span class="m-routine">'+timeIcons(p.time)+esc(p.time)+' · '+esc(p.step)+'</span>'+
     '<a class="btn btn-green" target="_blank" rel="noopener" href="https://wa.me/573148003634?text='+encodeURIComponent('Hola YUWA 🤍 Me interesa: '+p.brand+' '+p.name)+'">Pedir por WhatsApp</a></div>';
-  info.innerHTML=html;
-  var modal=$('#productModal');
-  if(modal){ modal.hidden=false; document.body.style.overflow='hidden'; }
+  info.innerHTML = html;
+  const modal = $('#productModal');
+  if(modal){ modal.hidden = false; document.body.style.overflow = 'hidden'; }
 }
-function closeModal(){ var modal=$('#productModal'); if(modal) modal.hidden=true; document.body.style.overflow=''; }
-var modalEl=$('#productModal');
-if(modalEl){ modalEl.addEventListener('click', function(e){ if(e.target.hasAttribute&&e.target.hasAttribute('data-close')) closeModal(); }); }
-document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeModal(); closeLightbox(); } });
+function closeModal(){ const m=$('#productModal'); if(m) m.hidden=true; document.body.style.overflow=''; }
+const modalEl = $('#productModal');
+if(modalEl) modalEl.addEventListener('click', e => { if(e.target.hasAttribute && e.target.hasAttribute('data-close')) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); closeLightbox(); } });
 
-/* ================= ADMIN ================= */
-var dz=$('#dropzone'), fImage=$('#fImage');
-if(dz){
-  dz.addEventListener('click', function(){ if(fImage) fImage.click(); });
-  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
-  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
-  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]) processSingleFile(e.dataTransfer.files[0]); });
-}
-if(fImage) fImage.addEventListener('change', function(){ if(fImage.files&&fImage.files[0]) processSingleFile(fImage.files[0]); });
-function processSingleFile(file){
-  if(!file.type.match(/^image\//)){ toast('El archivo debe ser una imagen.'); return; }
-  compressImageFile(file, 900, 0.85, function(data){
-    pendingImage=data;
-    dz.innerHTML='<img src="'+pendingImage+'" alt="Vista previa">';
-    toast('Imagen lista ✓');
+/* ================= LIGHTBOX ZOOM ================= */
+let lbImgEl=null, lbStageEl=null;
+const lb = { s:1, tx:0, ty:0 };
+let lbPointers = {}, lbPinch = null, lbDragging = false, lbLast = null;
+const lbApply = () => { if(lbImgEl) lbImgEl.style.transform = 'translate('+lb.tx+'px,'+lb.ty+'px) scale('+lb.s+')'; };
+const lbResetZoom = () => { lb.s=1; lb.tx=0; lb.ty=0; lbApply(); };
+const lbZoomBy = f => { lb.s = Math.min(6, Math.max(1, lb.s*f)); if(lb.s===1){ lb.tx=0; lb.ty=0; } lbApply(); };
+function openLightbox(src){ if(!src) return; lbImgEl=$('#lbImg'); lbStageEl=$('#lbStage'); lbImgEl.src=src; lbResetZoom(); $('#lightbox').hidden=false; document.body.style.overflow='hidden'; }
+function closeLightbox(){ const l=$('#lightbox'); if(l) l.hidden=true; document.body.style.overflow=''; lbPointers={}; lbPinch=null; lbDragging=false; }
+const lbDist = () => { const ks=Object.keys(lbPointers); if(ks.length<2) return 0; const a=lbPointers[ks[0]], b=lbPointers[ks[1]]; return Math.hypot(a[0]-b[0], a[1]-b[1]); };
+document.addEventListener('click', e => { const z = e.target.closest ? e.target.closest('[data-zoom]') : null; if(z){ e.stopPropagation(); e.preventDefault(); openLightbox(z.getAttribute('data-zoom')); } }, true);
+(function initLightbox(){
+  const stage = $('#lbStage'); if(!stage) return;
+  stage.addEventListener('pointerdown', e => {
+    lbPointers[e.pointerId]=[e.clientX,e.clientY];
+    try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+    if(Object.keys(lbPointers).length===2){ lbPinch={ d:lbDist(), s:lb.s }; }
+    else { lbDragging=true; lbLast=[e.clientX,e.clientY]; if(lbImgEl) lbImgEl.classList.add('dragging'); }
   });
-}
-function refreshAdminSelects(){
-  var cats=categoryNames(allProducts());
-  var sel=$('#fCat');
-  if(sel){ sel.innerHTML=cats.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join('')+'<option value="__new__">＋ Nueva categoría…</option>'; }
-  var brands=[]; allProducts().forEach(function(p){ if(brands.indexOf(p.brand)===-1) brands.push(p.brand); });
-  brands.sort();
-  var dl=$('#brandList'); if(dl) dl.innerHTML=brands.map(function(b){ return '<option value="'+esc(b)+'">'; }).join('');
-}
-var fCatEl=$('#fCat');
-if(fCatEl) fCatEl.addEventListener('change', function(){ var r=$('#catNewRow'); if(r) r.hidden=this.value!=='__new__'; });
-
-var productForm=$('#productForm');
-if(productForm) productForm.addEventListener('submit', function(e){
-  e.preventDefault();
-  var name=$('#fName').value.trim();
-  var brand=$('#fBrand').value.trim().toUpperCase();
-  var price=Number($('#fPrice').value);
-  var size=$('#fSize').value.trim();
-  var cat=$('#fCat').value==='__new__'?$('#fCatNew').value.trim():$('#fCat').value;
-  if(!name||!brand||!size||!cat){ toast('Completa nombre, marca, categoría y presentación.'); return; }
-  if(!editingId&&!pendingImage){ toast('Agrega la imagen del producto.'); return; }
-  if(editingId){
-    if(editingIsSeed){
-      var changes={ name:name, brand:brand, price:price, size:size, cat:cat, time:$('#fTime').value, step:$('#fStep').value,
-        benefits:linesOf($('#fBenefits').value), usage:$('#fUsage').value.trim() };
-      if(pendingImage) changes.img=pendingImage;
-      seedEdits[editingId]=Object.assign({}, seedEdits[editingId], changes);
-      saveEdits();
-    } else {
-      var target=null;
-      for(var i=0;i<addedProducts.length;i++){ if(addedProducts[i].id===editingId){ target=addedProducts[i]; break; } }
-      if(target){
-        Object.assign(target,{ name:name, brand:brand, price:price, size:size, cat:cat, time:$('#fTime').value, step:$('#fStep').value,
-          benefits:linesOf($('#fBenefits').value), usage:$('#fUsage').value.trim() });
-        if(pendingImage) target.img=pendingImage;
-        saveAdded();
-      }
+  stage.addEventListener('pointermove', e => {
+    if(!lbPointers[e.pointerId]) return;
+    lbPointers[e.pointerId]=[e.clientX,e.clientY];
+    if(Object.keys(lbPointers).length===2 && lbPinch){
+      const d=lbDist(); if(lbPinch.d>0){ lb.s=Math.min(6,Math.max(1,lbPinch.s*(d/lbPinch.d))); lbApply(); }
+    } else if(lbDragging && lbLast && lb.s>1){
+      lb.tx += e.clientX-lbLast[0]; lb.ty += e.clientY-lbLast[1]; lbLast=[e.clientX,e.clientY]; lbApply();
     }
-    toast('Producto actualizado ✓');
-  } else {
-    addedProducts.push({ id:'c'+Date.now(), custom:true, name:name, brand:brand, price:price, size:size, cat:cat,
-      time:$('#fTime').value, step:$('#fStep').value, benefits:linesOf($('#fBenefits').value), usage:$('#fUsage').value.trim(),
-      tagline:'Nuevo en la colección YUWA.', img:pendingImage });
-    saveAdded();
-    toast('Producto publicado en el catálogo ✓');
-  }
-  resetForm(); maybeLoadNextNew(); renderAdmin();
+  });
+  const lbEnd = e => { delete lbPointers[e.pointerId]; if(Object.keys(lbPointers).length<2) lbPinch=null; if(Object.keys(lbPointers).length===0){ lbDragging=false; if(lbImgEl) lbImgEl.classList.remove('dragging'); } lbLast=null; };
+  stage.addEventListener('pointerup', lbEnd);
+  stage.addEventListener('pointercancel', lbEnd);
+  stage.addEventListener('wheel', e => { e.preventDefault(); lbZoomBy(e.deltaY<0?1.18:0.85); }, {passive:false});
+  stage.addEventListener('dblclick', e => { e.preventDefault(); if(lb.s>1) lbResetZoom(); else { lb.s=2.6; lbApply(); } });
+  $('#lbIn').addEventListener('click', ()=>lbZoomBy(1.3));
+  $('#lbOut').addEventListener('click', ()=>lbZoomBy(0.75));
+  $('#lbReset').addEventListener('click', lbResetZoom);
+  $('#lbClose').addEventListener('click', closeLightbox);
+  $all('[data-lb-close]').forEach(el=>el.addEventListener('click', closeLightbox));
+})();
+
+/* ================= ADMIN: IMAGEN ================= */
+const dz = $('#dropzone'), fImage = $('#fImage');
+if(dz){
+  dz.addEventListener('click', ()=>{ if(fImage) fImage.click(); });
+  dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]){ pendingFile=e.dataTransfer.files[0]; previewPending(); } });
+}
+if(fImage) fImage.addEventListener('change', ()=>{ if(fImage.files&&fImage.files[0]){ pendingFile=fImage.files[0]; previewPending(); } });
+function previewPending(){
+  if(!pendingFile) return;
+  const r = new FileReader();
+  r.onload = ev => { dz.innerHTML = '<img src="'+ev.target.result+'" alt="Vista previa">'; toast('Imagen lista ✓'); };
+  r.readAsDataURL(pendingFile);
+}
+async function subirImagenSupabase(file){
+  const path = 'img/' + Date.now() + '-' + file.name.replace(/\s+/g,'-');
+  const { error } = await sb.storage.from('productos').upload(path, file, { upsert:true, contentType: file.type });
+  if(error) throw new Error(error.message);
+  return sb.storage.from('productos').getPublicUrl(path).data.publicUrl;
+}
+
+/* ================= ADMIN: FORMULARIO ================= */
+function refreshAdminSelects(){
+  const cats = categoryNames(state.products);
+  const sel = $('#fCat');
+  if(sel) sel.innerHTML = cats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('') + '<option value="__new__">＋ Nueva categoría…</option>';
+  const brands = []; state.products.forEach(p=>{ if(brands.indexOf(p.brand)===-1) brands.push(p.brand); }); brands.sort();
+  const dl = $('#brandList'); if(dl) dl.innerHTML = brands.map(b=>'<option value="'+esc(b)+'">').join('');
+}
+const fCatEl = $('#fCat');
+if(fCatEl) fCatEl.addEventListener('change', function(){ const r=$('#catNewRow'); if(r) r.hidden = this.value!=='__new__'; });
+
+const productForm = $('#productForm');
+if(productForm) productForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  if(!state.admin || !sb){ toast('Inicia sesión como admin.'); return; }
+  const nombre = $('#fName').value.trim();
+  const descripcion = $('#fDesc').value.trim();
+  const marca = $('#fBrand').value.trim().toUpperCase();
+  const precio = Number($('#fPrice').value);
+  const tamano = $('#fSize').value.trim();
+  const categoria = $('#fCat').value==='__new__' ? $('#fCatNew').value.trim() : $('#fCat').value;
+  const beneficios = linesOf($('#fBenefits').value);
+  const usos = linesOf($('#fUsos').value);
+  if(!nombre || !marca || !tamano || !categoria){ toast('Completa nombre, marca, categoría y presentación.'); return; }
+  try{
+    let imagen_url = $('#fImgUrl').value.trim();
+    if(pendingFile){ imagen_url = await subirImagenSupabase(pendingFile); }
+    const payload = { nombre, descripcion, marca, precio_cop: precio || 0, categoria, tamano,
+      momento_uso: $('#fTime').value, paso_rutina: $('#fStep').value, imagen_url, beneficios, activo: true };
+    let pid = editingId;
+    if(editingId){
+      const { error } = await sb.from('products').update(payload).eq('id', editingId);
+      if(error) throw new Error(error.message);
+      await sb.from('usos_sugeridos').delete().eq('product_id', editingId);
+    } else {
+      const { data, error } = await sb.from('products').insert(payload).select().single();
+      if(error) throw new Error(error.message);
+      pid = data.id;
+    }
+    if(usos.length){
+      const { error: eu } = await sb.from('usos_sugeridos').insert(usos.map((t,i)=>({ product_id: pid, texto: t, orden: i+1 })));
+      if(eu) throw new Error(eu.message);
+    }
+    toast(editingId ? 'Producto actualizado ✓' : 'Producto publicado en Supabase ✓');
+    resetForm();
+    await cargarProductos();
+    renderAdmin();
+  }catch(err){ toast('Error al guardar: ' + err.message); }
 });
 function resetForm(){
-  var f=$('#productForm'); if(f) f.reset();
-  pendingImage=null; editingId=null; editingIsSeed=false;
-  if(dz) dz.innerHTML='<div class="dz-txt"><b>Haz clic o arrastra</b> una imagen aquí<br>JPG / PNG · cuadrada ideal (1:1)</div>';
-  var ft=$('#formTitle'); if(ft) ft.textContent='Nuevo producto';
-  var sb=$('#submitBtn'); if(sb) sb.textContent='Publicar producto';
-  var ce=$('#cancelEdit'); if(ce) ce.hidden=true;
-  var cn=$('#catNewRow'); if(cn) cn.hidden=true;
+  const f = $('#productForm'); if(f) f.reset();
+  pendingFile = null; editingId = null;
+  if(dz) dz.innerHTML = '<div class="dz-txt"><b>Haz clic o arrastra</b> una imagen aquí<br>JPG / PNG · cuadrada ideal (1:1)</div>';
+  const ft=$('#formTitle'); if(ft) ft.textContent='Nuevo producto';
+  const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Publicar en Supabase';
+  const ce=$('#cancelEdit'); if(ce) ce.hidden=true;
+  const cn=$('#catNewRow'); if(cn) cn.hidden=true;
   refreshAdminSelects();
 }
-function maybeLoadNextNew(){
-  if(batchNewQueue.length){
-    pendingImage=batchNewQueue.shift();
-    dz.innerHTML='<img src="'+pendingImage+'" alt="Vista previa">';
-    var ft=$('#formTitle'); if(ft) ft.textContent='Nuevo producto · imagen lista ('+batchNewQueue.length+' en cola)';
-    var fc=document.querySelector('.form-card');
-    if(fc) fc.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-}
-var cancelEditBtn=$('#cancelEdit');
+const cancelEditBtn = $('#cancelEdit');
 if(cancelEditBtn) cancelEditBtn.addEventListener('click', resetForm);
 function startEdit(id){
-  var p=findProduct(id); if(!p) return;
-  editingId=id; editingIsSeed=!p.custom;
+  const p = state.products.find(x=>x.id===id); if(!p) return;
+  editingId = id;
   refreshAdminSelects();
-  $('#fName').value=p.name; $('#fBrand').value=p.brand; $('#fPrice').value=p.price; $('#fSize').value=p.size;
-  var sel=$('#fCat'); var exists=false;
-  for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===p.cat){ exists=true; break; } }
-  if(!exists){ var opt=document.createElement('option'); opt.value=p.cat; opt.textContent=p.cat; sel.appendChild(opt); }
-  sel.value=p.cat;
-  $('#fTime').value=p.time; $('#fStep').value=p.step;
-  $('#fBenefits').value=(p.benefits||[]).join('\n');
-  $('#fUsage').value=p.usage||'';
-  if(p.img) dz.innerHTML='<img src="'+esc(p.img)+'" alt="Vista previa">';
-  var ft=$('#formTitle'); if(ft) ft.textContent='Editando: '+p.name;
-  var sb=$('#submitBtn'); if(sb) sb.textContent='Guardar cambios';
-  var ce=$('#cancelEdit'); if(ce) ce.hidden=false;
-  var fc=document.querySelector('.form-card');
-  if(fc) fc.scrollIntoView({behavior:'smooth', block:'start'});
+  $('#fName').value = p.name; $('#fDesc').value = p.tagline || ''; $('#fBrand').value = p.brand;
+  $('#fPrice').value = p.price; $('#fSize').value = p.size;
+  const sel = $('#fCat');
+  if(!Array.from(sel.options).some(o=>o.value===p.cat)){ const o=document.createElement('option'); o.value=p.cat; o.textContent=p.cat; sel.appendChild(o); }
+  sel.value = p.cat;
+  $('#fTime').value = p.time; $('#fStep').value = p.step;
+  $('#fBenefits').value = (p.benefits||[]).join('\n');
+  $('#fUsos').value = (p.usos||[]).join('\n');
+  $('#fImgUrl').value = (p.img && p.img.indexOf('data:')!==0) ? p.img : '';
+  if(p.img) dz.innerHTML = '<img src="'+esc(p.img)+'" alt="Vista previa">';
+  pendingFile = null;
+  const ft=$('#formTitle'); if(ft) ft.textContent='Editando: '+p.name;
+  const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Guardar cambios';
+  const ce=$('#cancelEdit'); if(ce) ce.hidden=false;
+  document.querySelector('.form-card').scrollIntoView({behavior:'smooth', block:'start'});
 }
-var imgForInput=$('#imgForInput');
-function requestImageFor(id){ imgForTargetId=id; if(imgForInput) imgForInput.click(); }
-if(imgForInput) imgForInput.addEventListener('change', function(){
-  var f=imgForInput.files&&imgForInput.files[0];
-  if(!f||!imgForTargetId){ imgForTargetId=null; return; }
-  if(!f.type.match(/^image\//)){ toast('El archivo debe ser una imagen.'); imgForTargetId=null; imgForInput.value=''; return; }
-  var target=imgForTargetId;
-  compressImageFile(f, 900, 0.85, function(data){
-    assignImageToProduct(target, data);
-    imgForTargetId=null; imgForInput.value='';
-  });
-});
-function assignImageToProduct(id, data){
-  if(isSeedId(id)){ seedEdits[id]=Object.assign({}, seedEdits[id], { img:data }); saveEdits(); }
-  else {
-    var t=null;
-    for(var i=0;i<addedProducts.length;i++){ if(addedProducts[i].id===id){ t=addedProducts[i]; break; } }
-    if(t){ t.img=data; saveAdded(); }
-  }
-  renderAdmin();
-  toast('Imagen del producto actualizada ✓');
+async function toggleActivo(id){
+  const p = state.products.find(x=>x.id===id); if(!p) return;
+  const { error } = await sb.from('products').update({ activo: !p.activo }).eq('id', id);
+  if(error){ toast('Error: '+error.message); return; }
+  toast(p.activo ? 'Producto ocultado del sitio.' : 'Producto visible de nuevo ✓');
+  await cargarProductos(); renderAdmin();
+}
+async function deleteProduct(id){
+  if(!confirm('¿Eliminar definitivamente este producto y sus usos sugeridos?')) return;
+  const { error } = await sb.from('products').delete().eq('id', id);
+  if(error){ toast('Error: '+error.message); return; }
+  toast('Producto eliminado.');
+  await cargarProductos(); renderAdmin();
 }
 function renderAdmin(){
   refreshAdminSelects();
-  var banner=$('#setupBanner');
-  if(banner){ banner.hidden=!!lsGet('yuwa_setup_done_v1', false); }
-  var prods=allProducts();
-  var cnt=$('#adminCount'); if(cnt) cnt.textContent=prods.length;
-  var ownCount=prods.filter(hasOwnImage).length;
-  var ipText=$('#ipText'); if(ipText) ipText.textContent=ownCount+' de '+prods.length;
-  var ipFill=$('#ipFill'); if(ipFill) ipFill.style.width=(prods.length?Math.round(ownCount/prods.length*100):0)+'%';
-  var rows=$('#adminRows');
-  if(rows){
-    rows.innerHTML=prods.map(function(p){
-      var own=hasOwnImage(p);
-      return '<div class="a-row"><img src="'+esc(p.img||PLACEHOLDER_IMG)+'" alt="" loading="lazy"><div class="a-main"><b>'+esc(p.name)+'</b><span>'+esc(p.brand)+' · '+esc(p.cat)+' · '+esc(p.size)+'</span></div>'+
-        '<span class="a-badge '+(p.custom?'new':'base')+'">'+(p.custom?'Agregado':'Base')+'</span>'+
-        '<span class="a-badge '+(own?'own':'ref')+'">'+(own?'Img propia':'Referencia')+'</span>'+
-        '<span class="a-price">'+fmtPrice(p.price)+'</span>'+
-        '<div class="a-actions"><button class="a-btn imgbtn" data-imgfor="'+esc(p.id)+'">'+(own?'Cambiar imagen':'Subir imagen')+'</button>'+
-        '<button class="a-btn" data-edit="'+esc(p.id)+'">Editar</button>'+
-        (p.custom?'<button class="a-btn del" data-del="'+esc(p.id)+'">Eliminar</button>':'<button class="a-btn del" data-hide="'+esc(p.id)+'">Ocultar</button>')+
-        '</div></div>';
-    }).join('');
-  }
-  var hiddenSeeds=SEED.filter(function(p){ return removedSeeds.indexOf(p.id)!==-1; });
-  var hz=$('#hiddenZone');
-  if(hz){
-    hz.innerHTML=hiddenSeeds.length?
-      '<h3 style="margin-top:22px">Ocultos</h3>'+hiddenSeeds.map(function(p){
-        return '<div class="a-row"><img src="'+esc(p.img)+'" alt=""><div class="a-main"><b>'+esc(p.name)+'</b><span>'+esc(p.brand)+' · '+esc(p.cat)+'</span></div><button class="a-btn" data-restore="'+esc(p.id)+'">Restaurar</button></div>';
-      }).join(''):'';
-  }
-  $all('[data-imgfor]').forEach(function(b){ b.addEventListener('click', function(){ requestImageFor(b.getAttribute('data-imgfor')); }); });
-  $all('[data-edit]').forEach(function(b){ b.addEventListener('click', function(){ startEdit(b.getAttribute('data-edit')); }); });
-  $all('[data-del]').forEach(function(b){ b.addEventListener('click', function(){
-    var id=b.getAttribute('data-del');
-    if(confirm('¿Eliminar este producto del catálogo?')){
-      addedProducts=addedProducts.filter(function(p){ return p.id!==id; });
-      saveAdded();
-      if(editingId===id) resetForm();
-      renderAdmin(); toast('Producto eliminado.');
-    }
-  }); });
-  $all('[data-hide]').forEach(function(b){ b.addEventListener('click', function(){
-    var id=b.getAttribute('data-hide');
-    removedSeeds.push(id); saveRemoved();
-    if(editingId===id) resetForm();
-    renderAdmin(); toast('Producto ocultado del catálogo.');
-  }); });
-  $all('[data-restore]').forEach(function(b){ b.addEventListener('click', function(){
-    var id=b.getAttribute('data-restore');
-    removedSeeds=removedSeeds.filter(function(x){ return x!==id; });
-    saveRemoved();
-    renderAdmin(); toast('Producto restaurado ✓');
-  }); });
+  const cnt = $('#adminCount'); if(cnt) cnt.textContent = state.products.length;
+  const rows = $('#adminRows'); if(!rows) return;
+  if(!state.admin){ rows.innerHTML=''; return; }
+  rows.innerHTML = state.products.map(p =>
+    '<div class="a-row"><img src="'+esc(p.img)+'" alt="" loading="lazy"><div class="a-main"><b>'+esc(p.name)+'</b><span>'+esc(p.brand)+' · '+esc(p.cat)+' · '+esc(p.size)+'</span></div>'+
+    '<span class="a-badge '+(p.activo?'on':'off')+'">'+(p.activo?'Visible':'Oculto')+'</span>'+
+    '<span class="a-price">'+fmtPrice(p.price)+'</span>'+
+    '<div class="a-actions"><button class="a-btn" data-edit="'+esc(p.id)+'">Editar</button>'+
+    '<button class="a-btn" data-toggle="'+esc(p.id)+'">'+(p.activo?'Ocultar':'Mostrar')+'</button>'+
+    '<button class="a-btn del" data-del="'+esc(p.id)+'">Eliminar</button></div></div>'
+  ).join('');
+  $all('[data-edit]').forEach(b=>b.addEventListener('click', ()=>startEdit(b.getAttribute('data-edit'))));
+  $all('[data-toggle]').forEach(b=>b.addEventListener('click', ()=>toggleActivo(b.getAttribute('data-toggle'))));
+  $all('[data-del]').forEach(b=>b.addEventListener('click', ()=>deleteProduct(b.getAttribute('data-del'))));
 }
-var setupStartBtn=$('#setupStart');
-if(setupStartBtn) setupStartBtn.addEventListener('click', function(){
-  lsSet('yuwa_setup_done_v1', true);
-  var b=$('#setupBanner'); if(b) b.hidden=true;
-  toast('¡Manos a la obra! Sube tus imágenes cuando quieras.');
-});
+const loginBtn = $('#loginBtn'); if(loginBtn) loginBtn.addEventListener('click', loginAdmin);
+const logoutBtn = $('#logoutBtn'); if(logoutBtn) logoutBtn.addEventListener('click', logoutAdmin);
 
-/* ================= CARGA MASIVA ================= */
-var STOP_TOKENS=['para','con','the','and','de','la','el','sin','por','ml','gr','cop'];
-function guessProductId(fname){
-  var nf=normText(fname); var prods=allProducts();
-  var bestId='', bestScore=0;
-  prods.forEach(function(p){
-    var tokens=normText(p.brand+' '+p.name).split(/[^a-z0-9]+/).filter(function(t){ return t.length>=4&&STOP_TOKENS.indexOf(t)===-1; });
-    var score=0;
-    tokens.forEach(function(t){ if(nf.indexOf(t)!==-1) score++; });
-    if(score>bestScore){ bestScore=score; bestId=p.id; }
-  });
-  return bestScore>0?bestId:'';
-}
-var batchDropzone=$('#batchDropzone'), batchInput=$('#batchInput');
-if(batchDropzone){
-  batchDropzone.addEventListener('click', function(){ if(batchInput) batchInput.click(); });
-  batchDropzone.addEventListener('dragover', function(e){ e.preventDefault(); batchDropzone.classList.add('drag'); });
-  batchDropzone.addEventListener('dragleave', function(){ batchDropzone.classList.remove('drag'); });
-  batchDropzone.addEventListener('drop', function(e){ e.preventDefault(); batchDropzone.classList.remove('drag'); if(e.dataTransfer&&e.dataTransfer.files) handleBatchFiles(e.dataTransfer.files); });
-}
-if(batchInput) batchInput.addEventListener('change', function(){ handleBatchFiles(batchInput.files); batchInput.value=''; });
-function handleBatchFiles(files){
-  var arr=Array.prototype.slice.call(files||[]);
-  var imgs=arr.filter(function(f){ return f.type.match(/^image\//); });
-  if(!imgs.length){ toast('Selecciona archivos de imagen.'); return; }
-  toast('Procesando '+imgs.length+' imagen(es) en fila…');
-  imgs.forEach(function(f){ batchPendingFiles.push(f); });
-  if(!batchProcessing){ batchProcessing=true; processNextBatchFile(); }
-}
-function processNextBatchFile(){
-  var f=batchPendingFiles.shift();
-  if(!f){ batchProcessing=false; renderBatch(); toast('Imágenes procesadas ✓ Revisa la lista y pulsa Aplicar.'); return; }
-  compressImageFile(f, 800, 0.8, function(data){
-    batchQueue.push({ key:'b'+Date.now()+Math.random().toString(36).slice(2,7), fname:f.name, img:data, target:guessProductId(f.name) });
-    renderBatch();
-    processNextBatchFile();
-  });
-}
-function renderBatch(){
-  var zone=$('#batchList'); var counter=$('#batchCount');
-  if(counter) counter.textContent=batchQueue.length+' en lista';
-  if(!zone) return;
-  if(!batchQueue.length){ zone.innerHTML=''; return; }
-  var prods=allProducts();
-  var opts='<option value="">— Sin asignar —</option>'+prods.map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.brand)+' · '+esc(p.name)+'</option>'; }).join('')+'<option value="__new__">＋ Crear como producto nuevo</option>';
-  zone.innerHTML=batchQueue.map(function(entry){
-    var guessed=entry.target?'Asignado':'Sin asignar';
-    return '<div class="b-row" data-key="'+entry.key+'"><img src="'+entry.img+'" alt="">'+
-      '<div class="b-info"><b>'+esc(entry.fname)+'</b><span>'+guessed+'</span></div>'+
-      '<select class="b-select" data-bkey="'+entry.key+'">'+opts+'</select>'+
-      '<button type="button" class="b-remove" data-bdel="'+entry.key+'" aria-label="Quitar">✕</button></div>';
-  }).join('');
-  zone.querySelectorAll('.b-select').forEach(function(s){
-    var entry=batchQueue.find(function(x){ return x.key===s.getAttribute('data-bkey'); });
-    if(entry) s.value=entry.target||'';
-    s.addEventListener('change', function(){
-      var en=batchQueue.find(function(x){ return x.key===s.getAttribute('data-bkey'); });
-      if(en){ en.target=s.value; var lbl=s.closest('.b-row').querySelector('.b-info span'); if(lbl) lbl.textContent=s.value?'Asignado':'Sin asignar'; }
-    });
-  });
-  zone.querySelectorAll('[data-bdel]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var k=b.getAttribute('data-bdel');
-      batchQueue=batchQueue.filter(function(x){ return x.key!==k; });
-      renderBatch();
-    });
-  });
-}
-var applyBatchBtn=$('#applyBatch');
-if(applyBatchBtn) applyBatchBtn.addEventListener('click', function(){
-  if(!batchQueue.length){ toast('Primero sube imágenes a la lista.'); return; }
-  var applied=0, kept=[];
-  batchQueue.forEach(function(entry){
-    if(!entry.target){ kept.push(entry); return; }
-    if(entry.target==='__new__'){ batchNewQueue.push(entry.img); applied++; return; }
-    if(isSeedId(entry.target)){ seedEdits[entry.target]=Object.assign({}, seedEdits[entry.target], { img:entry.img }); saveEdits(); applied++; }
-    else {
-      var tgt=null;
-      for(var i=0;i<addedProducts.length;i++){ if(addedProducts[i].id===entry.target){ tgt=addedProducts[i]; break; } }
-      if(tgt){ tgt.img=entry.img; saveAdded(); applied++; } else kept.push(entry);
-    }
-  });
-  batchQueue=kept;
-  renderBatch(); renderAdmin();
-  toast(applied+' imagen(es) aplicadas ✓');
-  maybeLoadNextNew();
-});
-var clearBatchBtn=$('#clearBatch');
-if(clearBatchBtn) clearBatchBtn.addEventListener('click', function(){ batchQueue=[]; batchPendingFiles=[]; renderBatch(); toast('Lista descartada.'); });
-
-/* ================= PDF ALTA CALIDAD (jsPDF) ================= */
+/* ================= PDF ALTA CALIDAD ================= */
 function loadImageAsDataUrl(src){
-  return new Promise(function(resolve){
+  return new Promise(resolve => {
     if(!src){ resolve(null); return; }
     if(src.indexOf('data:')===0){ resolve(src); return; }
-    var done=false;
-    function fin(v){ if(!done){ done=true; resolve(v); } }
-    try{
-      fetch(src, {mode:'cors'}).then(function(r){ if(!r.ok) throw 0; return r.blob(); }).then(function(b){
-        var fr=new FileReader();
-        fr.onload=function(){ fin(fr.result); };
-        fr.onerror=function(){ fin(null); };
-        fr.readAsDataURL(b);
-      }).catch(function(){ fin(null); });
-    }catch(e){ fin(null); }
-    setTimeout(function(){ fin(null); }, 9000);
+    let done=false; const fin=v=>{ if(!done){ done=true; resolve(v); } };
+    fetch(src, {mode:'cors'}).then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(b=>{
+      const fr=new FileReader(); fr.onload=()=>fin(fr.result); fr.onerror=()=>fin(null); fr.readAsDataURL(b);
+    }).catch(()=>fin(null));
+    setTimeout(()=>fin(null), 9000);
   });
 }
-function hexToRgb(hex){
-  var m=String(hex||'').replace('#','');
-  if(m.length!==6) return [184,135,44];
-  return [parseInt(m.substr(0,2),16), parseInt(m.substr(2,2),16), parseInt(m.substr(4,2),16)];
-}
+const hexToRgb = hex => { const m=String(hex||'').replace('#',''); return m.length===6 ? [parseInt(m.substr(0,2),16),parseInt(m.substr(2,2),16),parseInt(m.substr(4,2),16)] : [184,135,44]; };
 function generateCatalogPDF(){
-  if(!(window.jspdf&&window.jspdf.jsPDF)){ toast('No se pudo cargar el generador de PDF.'); return; }
-  toast('Preparando PDF en alta calidad… puede tardar unos segundos');
-  var prods=allProducts();
-  var jobs=prods.map(function(p){
-    return loadImageAsDataUrl(p.img).then(function(d){ return { id:p.id, data:d }; });
-  });
-  Promise.all(jobs).then(function(list){
-    var imgMap={};
-    list.forEach(function(x){ imgMap[x.id]=x.data; });
-    try{ buildAndDownloadPdf(prods, imgMap); toast('PDF descargado ✓'); }
-    catch(err){ toast('No se pudo generar el PDF.'); }
+  if(!(window.jspdf && window.jspdf.jsPDF)){ toast('No se pudo cargar jsPDF.'); return; }
+  const prods = visibleProducts();
+  if(!prods.length){ toast('Aún no hay productos para el PDF.'); return; }
+  toast('Preparando PDF en alta calidad…');
+  Promise.all(prods.map(p => loadImageAsDataUrl(p.img).then(d=>({ id:p.id, data:d })))).then(list => {
+    const imgMap = {}; list.forEach(x=>{ imgMap[x.id]=x.data; });
+    try{ buildPdf(prods, imgMap); toast('PDF descargado ✓'); }
+    catch(e){ toast('No se pudo generar el PDF.'); }
   });
 }
-function buildAndDownloadPdf(prods, imgMap){
-  var J=window.jspdf.jsPDF;
-  var doc=new J({unit:'mm', format:'a4', compress:true});
-  var W=210, H=297, M=14;
-  var GOLD=[184,135,44], GREEN=[82,107,91], INK=[30,27,22], SOFT=[110,100,85], PALE=[243,232,210], LINEC=[226,216,198], WHITE=[255,253,248];
-  var catList=categoryNames(prods);
-
-  /* Layout determinista */
-  var layout=[];
-  layout.push({t:'cover'});
-  layout.push({t:'toc'});
-  layout.push({t:'routine', part:1});
-  layout.push({t:'routine', part:2});
-  var catIndexMap={};
-  catList.forEach(function(c, ci){
-    catIndexMap[c]=ci+2;
-    var items=prods.filter(function(p){ return p.cat===c; });
-    if(!items.length){ layout.push({t:'cat', cat:c, items:[], first:true, ci:ci+2}); return; }
-    for(var i=0;i<items.length;i+=2){ layout.push({t:'cat', cat:c, items:items.slice(i,i+2), first:(i===0), ci:ci+2}); }
+function buildPdf(prods, imgMap){
+  const J = window.jspdf.jsPDF;
+  const doc = new J({unit:'mm', format:'a4', compress:true});
+  const W=210,H=297,M=14;
+  const GOLD=[184,135,44], GREEN=[82,107,91], INK=[30,27,22], SOFT=[110,100,85], PALE=[243,232,210], LINEC=[226,216,198], WHITE=[255,253,248];
+  const catList = categoryNames(prods);
+  const layout = [{t:'cover'},{t:'toc'},{t:'routine',part:1},{t:'routine',part:2}];
+  const catIndexMap = {};
+  catList.forEach((c,ci)=>{ catIndexMap[c]=ci+2;
+    const items = prods.filter(p=>p.cat===c);
+    if(!items.length){ layout.push({t:'cat',cat:c,items:[],first:true,ci:ci+2}); return; }
+    for(let i=0;i<items.length;i+=2) layout.push({t:'cat',cat:c,items:items.slice(i,i+2),first:i===0,ci:ci+2});
   });
   layout.push({t:'contact'});
-  var routinePage=3, contactPage=layout.length;
-  var catPages={};
-  layout.forEach(function(e, i){ if(e.t==='cat' && catPages[e.cat]===undefined) catPages[e.cat]=i+1; });
-
-  function bg(){ doc.setFillColor(247,242,233); doc.rect(0,0,W,H,'F'); }
-  function footer(n){ doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text('YUWA · Belleza coreana, elegida para tu piel. · Pág. '+n, W/2, H-7, {align:'center'}); }
-  function diamond(x,y){ doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.triangle(x,y-1.8,x+1.8,y,x,y+1.8,'F'); doc.triangle(x,y-1.8,x-1.8,y,x,y+1.8,'F'); }
-  function emblem(cx,cy,r){
-    doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5);
-    doc.circle(cx,cy,r,'S');
-    doc.setFont('times','bold'); doc.setFontSize(r*1.1); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-    doc.text('YW', cx, cy+r*0.35, {align:'center'});
-    doc.setLineWidth(0.35);
-    doc.line(cx-r-42, cy, cx-r-6, cy);
-    doc.line(cx+r+6, cy, cx+r+42, cy);
-    diamond(cx-r-9, cy); diamond(cx+r+9, cy);
-  }
-  function addImg(data,x,y,w,h){
-    doc.setFillColor(WHITE[0],WHITE[1],WHITE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4);
-    doc.roundedRect(x-1.2,y-1.2,w+2.4,h+2.4,3,3,'FD');
-    if(!data){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(10); doc.text('YW', x+w/2, y+h/2, {align:'center'}); return; }
-    var fmt=data.indexOf('image/png')!==-1?'PNG':'JPEG';
-    doc.addImage(data, fmt, x, y, w, h, undefined, 'FAST');
-  }
-
-  layout.forEach(function(entry, idx){
+  const routinePage=3, contactPage=layout.length;
+  const catPages={}; layout.forEach((e,i)=>{ if(e.t==='cat' && catPages[e.cat]===undefined) catPages[e.cat]=i+1; });
+  const bg=()=>{ doc.setFillColor(247,242,233); doc.rect(0,0,W,H,'F'); };
+  const footer=n=>{ doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text('YUWA · Belleza coreana, elegida para tu piel. · Pág. '+n, W/2, H-7, {align:'center'}); };
+  const diamond=(x,y)=>{ doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.triangle(x,y-1.8,x+1.8,y,x,y+1.8,'F'); doc.triangle(x,y-1.8,x-1.8,y,x,y+1.8,'F'); };
+  const emblem=(cx,cy,r)=>{ doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.circle(cx,cy,r,'S'); doc.setFont('times','bold'); doc.setFontSize(r*1.1); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('YW',cx,cy+r*0.35,{align:'center'}); doc.setLineWidth(0.35); doc.line(cx-r-42,cy,cx-r-6,cy); doc.line(cx+r+6,cy,cx+r+42,cy); diamond(cx-r-9,cy); diamond(cx+r+9,cy); };
+  const addImg=(data,x,y,w,h)=>{ doc.setFillColor(WHITE[0],WHITE[1],WHITE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.roundedRect(x-1.2,y-1.2,w+2.4,h+2.4,3,3,'FD'); if(!data){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(10); doc.text('YW',x+w/2,y+h/2,{align:'center'}); return; } const fmt=data.indexOf('image/png')!==-1?'PNG':'JPEG'; doc.addImage(data,fmt,x,y,w,h,undefined,'FAST'); };
+  layout.forEach((entry,idx)=>{
     if(idx>0) doc.addPage();
-    var n=idx+1;
-    bg();
-
+    const n=idx+1; bg();
     if(entry.t==='cover'){
-      emblem(W/2, 38, 11);
+      emblem(W/2,38,11);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
       doc.text('C O L E C C I Ó N   2 0 2 6   ·   Y U W A', W/2, 58, {align:'center'});
       doc.setFont('times','bold'); doc.setFontSize(34); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Catálogo de', W/2, 72, {align:'center'});
-      doc.text('Skincare Coreano', W/2, 86, {align:'center'});
+      doc.text('Catálogo de', W/2, 72, {align:'center'}); doc.text('Skincare Coreano', W/2, 86, {align:'center'});
       doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
       doc.text('Belleza coreana, elegida para tu piel.', W/2, 96, {align:'center'});
-      var collage=[];
-      catList.forEach(function(c){ if(collage.length<8){ var pp=null; for(var i=0;i<prods.length;i++){ if(prods[i].cat===c){ pp=prods[i]; break; } } if(pp) collage.push(pp); } });
-      for(var i2=0; i2<prods.length && collage.length<8; i2++){ if(collage.indexOf(prods[i2])===-1) collage.push(prods[i2]); }
-      var size=40, gap=5, cols=4;
-      var totalW=cols*size+(cols-1)*gap; var x0=(W-totalW)/2; var y0=106;
-      collage.forEach(function(p, i){
-        var cx=x0+(i%cols)*(size+gap); var cy=y0+Math.floor(i/cols)*(size+gap);
-        addImg(imgMap[p.id], cx, cy, size, size);
-      });
+      const collage=[]; catList.forEach(c=>{ if(collage.length<8){ const pp=prods.find(p=>p.cat===c); if(pp) collage.push(pp); } });
+      for(let i=0;i<prods.length&&collage.length<8;i++){ if(collage.indexOf(prods[i])===-1) collage.push(prods[i]); }
+      const size=40,gap=5,cols=4,totalW=cols*size+(cols-1)*gap,x0=(W-totalW)/2,y0=106;
+      collage.forEach((p,i)=>{ addImg(imgMap[p.id], x0+(i%cols)*(size+gap), y0+Math.floor(i/cols)*(size+gap), size, size); });
       doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
       doc.text(prods.length+' productos · '+catList.length+' categorías · Envíos a toda Colombia', W/2, y0+2*size+gap+12, {align:'center'});
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.line(M, H-24, W-M, H-24);
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.line(M,H-24,W-M,H-24);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
       doc.text('WhatsApp +57 314 800 3634   ·   @yuwa_co', W/2, H-16, {align:'center'});
-      footer(n);
-      return;
+      footer(n); return;
     }
-
     if(entry.t==='toc'){
-      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Contenido', M, 28);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M, 32, W-M, 32);
-      var y=44;
-      function tocRow(num, title, page, sub){
-        doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        doc.textWithLink(num, M, y, {pageNumber: page});
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(INK[0],INK[1],INK[2]);
-        doc.textWithLink(title, M+12, y, {pageNumber: page});
+      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Contenido', M, 28);
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,32,W-M,32);
+      let y=44;
+      const tocRow=(num,title,page,sub)=>{
+        doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.textWithLink(num, M, y, {pageNumber:page});
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(INK[0],INK[1],INK[2]); doc.textWithLink(title, M+12, y, {pageNumber:page});
         if(sub){ doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(sub, M+12, y+4.5); }
         doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        var ptxt=String(page);
-        var px=W-M-doc.getTextWidth(ptxt);
-        doc.textWithLink(ptxt, px, y, {pageNumber: page});
-        doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2); doc.line(M, y+8, W-M, y+8);
-        y+=sub?14:12;
-      }
+        const ptxt=String(page); doc.textWithLink(ptxt, W-M-doc.getTextWidth(ptxt), y, {pageNumber:page});
+        doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2); doc.line(M,y+8,W-M,y+8);
+        y += sub?14:12;
+      };
       tocRow('01','Tu rutina YUWA', routinePage, 'Orden de aplicación y consejos de uso AM / PM');
-      catList.forEach(function(c){ tocRow(pad2(catIndexMap[c]), c, catPages[c], descFor(c)); });
+      catList.forEach(c=>tocRow(pad2(catIndexMap[c]), c, catPages[c], descFor(c)));
       tocRow(pad2(catList.length+2),'Pedidos y contacto', contactPage, 'WhatsApp · Instagram · Envíos · Garantía');
-      footer(n);
-      return;
+      footer(n); return;
     }
-
     if(entry.t==='routine'){
-      var steps=entry.part===1?ROUTINE.slice(0,4):ROUTINE.slice(4);
-      doc.setFont('times','bold'); doc.setFontSize(24); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Tu rutina YUWA', M, 24);
+      const steps = entry.part===1 ? ROUTINE.slice(0,4) : ROUTINE.slice(4);
+      doc.setFont('times','bold'); doc.setFontSize(24); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Tu rutina YUWA', M, 24);
       doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
       doc.text('Cada paso prepara el siguiente para revelar una piel más equilibrada, luminosa y confortable.', M, 31);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M, 35, W-M, 35);
-      var ry=44;
-      steps.forEach(function(s){
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,35,W-M,35);
+      let ry=44;
+      steps.forEach(s=>{
         doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
         doc.text('PASO '+s.n+' · '+(s.am&&s.pm?'AM Y PM':(s.am?'AM':'PM')), M, ry);
-        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(INK[0],INK[1],INK[2]);
-        doc.text(s.title, M, ry+6);
+        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(s.title, M, ry+6);
         doc.setFont('helvetica','normal'); doc.setFontSize(8.6); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        var lines=doc.splitTextToSize(s.desc, W-2*M);
-        doc.text(lines, M, ry+12);
-        var dy=ry+12+lines.length*4.1;
+        const lines=doc.splitTextToSize(s.desc, W-2*M); doc.text(lines, M, ry+12);
+        const dy=ry+12+lines.length*4.1;
         doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(107,84,38);
-        var tips=doc.splitTextToSize('Beauty tip: '+s.tip, W-2*M);
-        doc.text(tips, M, dy+2);
+        const tips=doc.splitTextToSize('Beauty tip: '+s.tip, W-2*M); doc.text(tips, M, dy+2);
         ry=dy+2+tips.length*3.7+8;
       });
-      footer(n);
-      return;
+      footer(n); return;
     }
-
     if(entry.t==='cat'){
-      var acc=hexToRgb(accentFor(entry.cat));
+      const acc=hexToRgb(accentFor(entry.cat));
       if(entry.first){
         doc.setFont('times','bold'); doc.setFontSize(24); doc.setTextColor(acc[0],acc[1],acc[2]);
         doc.text(pad2(entry.ci)+' · '+entry.cat, M, 26);
-        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        doc.text(descFor(entry.cat), M, 33);
-        doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.8); doc.line(M, 37, W-M, 37);
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(descFor(entry.cat), M, 33);
+        doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.8); doc.line(M,37,W-M,37);
       } else {
-        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        doc.text(entry.cat+' · continuación', M, 24);
-        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.line(M, 28, W-M, 28);
+        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(entry.cat+' · continuación', M, 24);
+        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.line(M,28,W-M,28);
       }
-      var y0=entry.first?46:36;
-      entry.items.forEach(function(p, i){
-        var y=y0+i*120;
+      const y0=entry.first?46:36;
+      entry.items.forEach((p,i)=>{
+        const y=y0+i*120;
         addImg(imgMap[p.id], M, y, 88, 88);
-        var rx=M+96, rw=W-M-rx;
-        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        doc.text(String(p.brand).toUpperCase(), rx, y+6);
+        const rx=M+96, rw=W-M-rx;
+        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(String(p.brand).toUpperCase(), rx, y+6);
         doc.setFont('times','bold'); doc.setFontSize(15); doc.setTextColor(INK[0],INK[1],INK[2]);
-        var nl=doc.splitTextToSize(p.name, rw);
-        doc.text(nl, rx, y+13);
-        var after=y+13+(nl.length-1)*6.4;
-        if(p.tagline){
-          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-          var tl=doc.splitTextToSize(p.tagline, rw);
-          doc.text(tl, rx, after+6);
-          after+=6+tl.length*4.1;
-        }
-        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        doc.text(p.size+' · '+p.step+' · '+p.time, rx, after+5);
-        after+=9;
-        var priceTxt=fmtPrice(p.price);
+        const nl=doc.splitTextToSize(p.name, rw); doc.text(nl, rx, y+13);
+        let after=y+13+(nl.length-1)*6.4;
+        if(p.tagline){ doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]); const tl=doc.splitTextToSize(p.tagline, rw); doc.text(tl, rx, after+6); after+=6+tl.length*4.1; }
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(p.size+' · '+p.step+' · '+p.time, rx, after+5); after+=9;
+        const priceTxt=fmtPrice(p.price);
         doc.setFont('helvetica','bold'); doc.setFontSize(11);
-        var pw=doc.getTextWidth(priceTxt)+8;
+        const pw=doc.getTextWidth(priceTxt)+8;
         doc.setFillColor(PALE[0],PALE[1],PALE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4);
         doc.roundedRect(rx, after, pw, 9, 2, 2, 'FD');
-        doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(priceTxt, rx+4, after+6.2);
-        after+=15;
+        doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(priceTxt, rx+4, after+6.2); after+=15;
         if(p.benefits&&p.benefits.length){
           doc.setFont('helvetica','normal'); doc.setFontSize(8.3);
-          p.benefits.slice(0,4).forEach(function(b){
-            var bl=doc.splitTextToSize(b, rw-5);
+          p.benefits.slice(0,4).forEach(b=>{
+            const bl=doc.splitTextToSize(b, rw-5);
             doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('◇', rx, after+3);
             doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(bl, rx+5, after+3);
             after+=bl.length*3.9+2.2;
           });
         }
+        if(p.usos&&p.usos.length){
+          doc.setFont('helvetica','italic'); doc.setFontSize(7.8); doc.setTextColor(107,84,38);
+          const ul=doc.splitTextToSize('Uso: '+p.usos[0], rw); doc.text(ul, rx, after+3);
+        }
       });
-      footer(n);
-      return;
+      footer(n); return;
     }
-
     if(entry.t==='contact'){
-      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Pedidos y contacto', M, 30);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M, 34, W-M, 34);
-      var cy=48;
+      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Pedidos y contacto', M, 30);
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,34,W-M,34);
+      let cy=48;
       [['01 · WhatsApp','+57 314 800 3634 · Asesoría y pedidos directos.'],
        ['02 · Instagram','@yuwa_co · Novedades y contenido de rutina.'],
        ['03 · Envíos','A toda Colombia · Empaque protegido y cuidado.'],
-       ['04 · Garantía','Productos 100% originales · Importación verificada.']].forEach(function(row){
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        doc.text(row[0], M, cy);
-        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        doc.text(row[1], M, cy+6);
+       ['04 · Garantía','Productos 100% originales · Importación verificada.']].forEach(row=>{
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(row[0], M, cy);
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(row[1], M, cy+6);
         cy+=16;
       });
-      doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-      doc.text('¿No sabes qué elegir?', M, cy+6);
-      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-      doc.text(doc.splitTextToSize('Cuéntanos tu tipo de piel, tus objetivos y tu rutina actual. Te ayudamos a construir una selección simple, coherente y realista.', W-2*M), M, cy+12);
       emblem(W/2, H-52, 10);
-      doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('GRACIAS POR ELEGIR YUWA', W/2, H-32, {align:'center'});
+      doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('GRACIAS POR ELEGIR YUWA', W/2, H-32, {align:'center'});
       doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
       doc.text('Skincare coreano para una piel sana, luminosa y cuidada.', W/2, H-26, {align:'center'});
       footer(n);
     }
   });
-
   doc.save('yuwa_catalogo_2026.pdf');
 }
-var pdfBtn=$('#pdfBtn'); if(pdfBtn) pdfBtn.addEventListener('click', generateCatalogPDF);
-var pdfBtn2=$('#pdfBtn2'); if(pdfBtn2) pdfBtn2.addEventListener('click', generateCatalogPDF);
+const pdfBtn=$('#pdfBtn'); if(pdfBtn) pdfBtn.addEventListener('click', generateCatalogPDF);
+const pdfBtn2=$('#pdfBtn2'); if(pdfBtn2) pdfBtn2.addEventListener('click', generateCatalogPDF);
 
-/* ================= RESPALDO JSON ================= */
-var exportBtn=$('#exportBtn');
-if(exportBtn) exportBtn.addEventListener('click', function(){
-  var data={ app:'YUWA Catalogo Virtual', version:1, fecha:new Date().toISOString(), products: allProducts() };
-  try{
-    var blob=new Blob([JSON.stringify(data)], { type:'application/json' });
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='yuwa_catalogo_'+new Date().toISOString().slice(0,10)+'.json';
-    document.body.appendChild(a); a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); if(a.parentNode) a.parentNode.removeChild(a); }, 500);
-    toast('Catálogo exportado ✓');
-  }catch(e){ toast('No se pudo exportar.'); }
+/* ================= EXPORT JSON ================= */
+const exportBtn=$('#exportBtn');
+if(exportBtn) exportBtn.addEventListener('click', ()=>{
+  const data={ app:'YUWA Catalogo Virtual (Supabase)', fecha:new Date().toISOString(), products: state.products };
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='yuwa_catalogo_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+  toast('Respaldo exportado ✓');
 });
-var importBtn=$('#importBtn'), importInput=$('#importInput');
-if(importBtn) importBtn.addEventListener('click', function(){ if(importInput) importInput.click(); });
-if(importInput) importInput.addEventListener('change', function(){
-  var f=importInput.files&&importInput.files[0];
-  if(!f) return;
-  var rd=new FileReader();
-  rd.onload=function(ev){
-    try{
-      var obj=JSON.parse(ev.target.result);
-      var list=obj&&obj.products?obj.products:(Array.isArray(obj)?obj:null);
-      if(!list){ toast('JSON no válido.'); return; }
-      var count=0;
-      list.forEach(function(p){
-        if(!p||!p.name) return;
-        p.img=p.img||PLACEHOLDER_IMG;
-        if(p.id&&isSeedId(p.id)){
-          seedEdits[p.id]=Object.assign({}, seedEdits[p.id], { name:p.name, brand:p.brand, price:Number(p.price)||0, size:p.size||'', cat:p.cat||'Sin categoría', time:p.time||'Día y Noche', step:p.step||'Tratamiento', benefits:p.benefits||[], usage:p.usage||'', img:p.img });
-        } else if(p.id&&addedProducts.some(function(x){ return x.id===p.id; })){
-          var tgt=addedProducts.find(function(x){ return x.id===p.id; });
-          Object.assign(tgt, p);
-        } else {
-          p.id=p.id||('c'+Date.now()+Math.random().toString(36).slice(2,6));
-          p.custom=true;
-          addedProducts.push(p);
-        }
-        count++;
-      });
-      saveEdits(); saveAdded();
-      renderAdmin();
-      toast(count+' producto(s) importados ✓');
-    }catch(e){ toast('El archivo no es un JSON válido.'); }
-  };
-  rd.readAsText(f);
-  importInput.value='';
-});
-
-/* ================= UTILIDADES VISUALES ================= */
-function toast(msg){
-  var zone=$('#toastZone'); if(!zone) return;
-  var t=document.createElement('div');
-  t.className='toast'; t.textContent=msg;
-  zone.appendChild(t);
-  setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 400); }, 2600);
-}
-var revealObserver=null;
-if('IntersectionObserver' in window){
-  revealObserver=new IntersectionObserver(function(entries){
-    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); revealObserver.unobserve(en.target); } });
-  }, {threshold:.08});
-}
-function observeReveals(){
-  $all('.reveal:not(.in)').forEach(function(el){
-    if(revealObserver){ revealObserver.observe(el); } else { el.classList.add('in'); }
-  });
-}
 
 /* ================= EVENTOS GLOBALES ================= */
-var brandSelectEl=$('#brandSelect');
+const brandSelectEl=$('#brandSelect');
 if(brandSelectEl) brandSelectEl.addEventListener('change', function(){ state.brand=this.value; renderCatalogBody(); });
-var searchInputEl=$('#searchInput');
+const searchInputEl=$('#searchInput');
 if(searchInputEl) searchInputEl.addEventListener('input', function(){ state.q=this.value.trim(); renderCatalogBody(); });
-var menuBtnEl=$('#menuBtn');
-if(menuBtnEl) menuBtnEl.addEventListener('click', function(e){ e.stopPropagation(); var n=$('#mainNav'); if(n) n.classList.toggle('open'); });
+const menuBtnEl=$('#menuBtn');
+if(menuBtnEl) menuBtnEl.addEventListener('click', e=>{ e.stopPropagation(); const n=$('#mainNav'); if(n) n.classList.toggle('open'); });
+
+/* ================= UTILIDADES VISUALES ================= */
+let revealObserver=null;
+if('IntersectionObserver' in window){
+  revealObserver=new IntersectionObserver(entries=>{ entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); revealObserver.unobserve(en.target); } }); },{threshold:.08});
+}
+function observeReveals(){ $all('.reveal:not(.in)').forEach(el=>{ if(revealObserver) revealObserver.observe(el); else el.classList.add('in'); }); }
 
 /* ================= INIT ================= */
-(function init(){
-  try{
-    var hb=document.getElementById('heroBg');
-    if(hb) hb.style.backgroundImage="url('"+HERO_IMG+"')";
-    loadCollections().then(function(){
-      var initial='';
-      try{ initial=location.hash.replace('#',''); }catch(e){}
-      state.view=VIEWS.indexOf(initial)!==-1?initial:'inicio';
-      renderView();
-    });
-  }catch(err){
-    var v=document.getElementById('view-inicio');
-    if(v) v.classList.add('on');
+(async function init(){
+  updateAuthUI();
+  if(sb){
+    sb.auth.onAuthStateChange(()=>{ refreshAuth(); });
+    await refreshAuth();
   }
+  await cargarProductos();
+  const initial = location.hash.replace('#','');
+  state.view = VIEWS.indexOf(initial)!==-1 ? initial : 'inicio';
+  renderView();
 })();
 </script>
 </body>
