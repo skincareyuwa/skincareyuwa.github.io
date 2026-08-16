@@ -41,10 +41,6 @@ a{color:inherit;text-decoration:none}
 .mainnav button:hover,.mainnav button.active{color:var(--ink)}
 .mainnav button.active::after,.mainnav button:hover::after{transform:scaleX(1)}
 .topbar-actions{display:flex;align-items:center;gap:10px}
-.btn-admin{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:8px 16px;border-radius:999px;transition:.25s}
-.btn-admin:hover{background:var(--gold);color:#fff}
-.sb-dot{width:8px;height:8px;border-radius:50%;background:#c9c1b2;display:inline-block}
-.sb-dot.on{background:#5d8f68;box-shadow:0 0 0 3px rgba(93,143,104,.2)}
 .menu-btn{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:10px;align-items:center;justify-content:center;background:var(--card)}
 .menu-btn svg{width:20px;height:20px;stroke:var(--ink)}
 
@@ -121,9 +117,6 @@ a{color:inherit;text-decoration:none}
 .select-wrap select{appearance:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:12px 44px 12px 20px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);outline:none;cursor:pointer}
 .select-wrap select:focus{border-color:var(--gold)}
 .select-wrap::after{content:"▾";position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none}
-.btn-pdf{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gold);color:var(--gold);background:var(--card);border-radius:999px;padding:11px 20px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;transition:.25s}
-.btn-pdf:hover{background:var(--gold);color:#fff}
-.btn-pdf svg{width:15px;height:15px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);transition:.25s}
@@ -185,6 +178,11 @@ a{color:inherit;text-decoration:none}
 .dropzone .dz-txt b{color:var(--gold)}
 .dropzone img{max-height:160px;margin:0 auto;border-radius:10px;box-shadow:var(--shadow)}
 .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.pair-row{display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;margin-bottom:8px;align-items:center}
+.pair-row input{border:1px solid var(--line);background:var(--ivory2);border-radius:10px;padding:10px 12px;outline:none;font-size:13.5px}
+.pair-row input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-pale)}
+.pair-del{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;color:var(--soft);transition:.2s}
+.pair-del:hover{border-color:#A8552F;color:#A8552F}
 .admin-list h3{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:14px}
 .a-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px;transition:.25s;flex-wrap:wrap}
 .a-row:hover{border-color:var(--gold-soft);box-shadow:var(--shadow)}
@@ -265,7 +263,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
-.loading{ text-align:center;color:var(--soft);padding:60px 0;letter-spacing:.14em;text-transform:uppercase;font-size:12px }
+.loading{text-align:center;color:var(--soft);padding:60px 0;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
 
 @media(max-width:960px){
   .admin-wrap{grid-template-columns:1fr}
@@ -281,6 +279,8 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   .menu-btn{display:flex}
   .cat-head p{display:none}
   .lb-hint{display:none}
+  .pair-row{grid-template-columns:1fr auto}
+  .pair-row .pair-ing{grid-column:1 / -1}
 }
 @media(max-width:520px){
   .f-2{grid-template-columns:1fr}
@@ -312,7 +312,6 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       <button data-goto="contacto">Contacto</button>
     </nav>
     <div class="topbar-actions">
-      <button class="btn-admin" data-goto="admin"><span class="sb-dot" id="sbDot"></span> Admin</button>
       <button class="menu-btn" id="menuBtn" aria-label="Menú">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
       </button>
@@ -394,10 +393,6 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       <div class="select-wrap">
         <select id="brandSelect" aria-label="Filtrar por marca"></select>
       </div>
-      <button class="btn-pdf" id="pdfBtn" title="Descargar PDF de alta calidad">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
-        Descargar PDF
-      </button>
     </div>
     <div class="chips" id="catChips"></div>
     <div id="catalogBody" style="padding-bottom:80px"></div>
@@ -425,15 +420,15 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   </div>
 </section>
 
+<!-- Panel oculto: acceso solo mediante https://skincareyuwa.github.io/#admin -->
 <section class="view" id="view-admin">
   <div class="container">
     <div class="view-head">
       <p class="kicker">Gestión · Supabase</p>
       <h2>Panel de administrador</h2>
-      <p>Los productos, imágenes y usos sugeridos se guardan en tu base de datos de Supabase y se publican al instante en https://skincareyuwa.github.io/</p>
+      <p>Los productos, imágenes e ingredientes activos se guardan en Supabase y se publican al instante en el catálogo.</p>
     </div>
 
-    <!-- Login -->
     <div class="form-card login-card" id="loginCard">
       <h3>Iniciar sesión</h3>
       <p class="sub">Usa el usuario admin creado en Supabase → Authentication.</p>
@@ -446,12 +441,11 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       <p class="sb-help" id="sbHelp"></p>
     </div>
 
-    <!-- Herramientas admin -->
     <div id="adminTools" hidden>
       <div class="admin-wrap">
         <form class="form-card" id="productForm" novalidate>
           <h3 id="formTitle">Nuevo producto</h3>
-          <p class="sub">Se publica en Supabase (tabla products + usos_sugeridos + Storage).</p>
+          <p class="sub">Se publica en Supabase (tabla products + Storage).</p>
           <div class="f-row">
             <label>Imagen del producto *</label>
             <div class="dropzone" id="dropzone">
@@ -459,11 +453,10 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
             </div>
             <input type="file" id="fImage" accept="image/*" hidden>
           </div>
-          <div class="f-row"><label>…o pega una URL de imagen</label><input id="fImgUrl" type="url" placeholder="https://…/imagen.jpg"></div>
-          <div class="f-row"><label>Nombre del producto *</label><input id="fName" type="text" placeholder="Ej: Triple Collagen Toner 4.0"></div>
-          <div class="f-row"><label>Descripción destacada</label><input id="fDesc" type="text" placeholder="Ej: Hidratación, elasticidad y luminosidad diaria."></div>
+          <div class="f-row"><label>Nombre del producto *</label><input id="fName" type="text" placeholder="Ej: Rice 7 + Ceramide Hydrating Barrier Serum"></div>
+          <div class="f-row"><label>Descripción destacada</label><input id="fDesc" type="text" placeholder="Ej: Repara y fortalece la barrera de tu piel."></div>
           <div class="f-2">
-            <div class="f-row"><label>Marca *</label><input id="fBrand" list="brandList" type="text" placeholder="Ej: MEDICUBE"><datalist id="brandList"></datalist></div>
+            <div class="f-row"><label>Marca *</label><input id="fBrand" list="brandList" type="text" placeholder="Ej: ANUA"><datalist id="brandList"></datalist></div>
             <div class="f-row"><label>Precio (COP) *</label><input id="fPrice" type="number" min="0" step="500" placeholder="99900"></div>
           </div>
           <div class="f-2">
@@ -477,15 +470,18 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
           <div class="f-row"><label>Paso de rutina</label><select id="fStep">
             <option>Paso 1</option><option>Paso 2</option><option>Paso 3</option><option>Paso 4</option><option>Paso 5</option><option>Paso 6</option><option>Paso 7</option><option>Paso 8</option><option>Antes del tónico</option><option>Tratamiento</option>
           </select></div>
-          <div class="f-row"><label>Beneficios (uno por línea)</label><textarea id="fBenefits" placeholder="Hidrata intensamente.&#10;Aporta luminosidad."></textarea></div>
-          <div class="f-row"><label>Usos sugeridos (uno por línea · puede tener varios)</label><textarea id="fUsos" placeholder="Aplica después de la limpieza…&#10;De día, finaliza con protector solar."></textarea></div>
+          <div class="f-row">
+            <label>Ingredientes activos y beneficios</label>
+            <div id="pairsZone"></div>
+            <button type="button" class="btn-ghost" id="addPair">＋ Agregar ingrediente</button>
+          </div>
           <div class="form-actions">
             <button type="submit" class="btn btn-gold" id="submitBtn">Publicar en Supabase</button>
             <button type="button" class="btn-ghost" id="cancelEdit" hidden>Cancelar edición</button>
           </div>
         </form>
         <div class="admin-list">
-          <div class="admin-note">◇ Conectado a Supabase: los cambios se guardan en la nube y son visibles al instante en todas las visitas del sitio. «Ocultar» desactiva el producto (activo=false) sin borrarlo.</div>
+          <div class="admin-note">◇ Conectado a Supabase: los cambios se guardan en la nube y son visibles al instante en el sitio. Cada pareja «ingrediente activo : beneficio» se guarda en el campo <b>beneficios</b> y se muestra como viñeta en el catálogo y el PDF. «Ocultar» desactiva el producto sin borrarlo.</div>
           <h3>Productos en la base (<span id="adminCount">0</span>)</h3>
           <div id="adminRows"></div>
         </div>
@@ -493,7 +489,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 
       <div class="backup-zone">
         <h3>Respaldo y versión física</h3>
-        <p class="sub">Descarga el PDF en alta calidad (portada con imágenes, contenido con enlaces, rutina y productos por categoría) o exporta un JSON de respaldo.</p>
+        <p class="sub">Descarga el PDF en alta calidad (portada con imágenes, contenido con enlaces, rutina y productos por categoría) o exporta un JSON de respaldo. Solo visible para el administrador.</p>
         <div class="backup-actions">
           <button class="btn btn-gold" id="pdfBtn2">Descargar PDF alta calidad</button>
           <button class="btn btn-outline" id="exportBtn">Exportar JSON</button>
@@ -547,11 +543,9 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 
 <script>
 /* ══════════════════════════════════════════════════════════
-   🔑 CONFIGURACIÓN DE SUPABASE — PASO OBLIGATORIO
-   1) Supabase → Settings → API
-   2) Copia "Project URL" y "anon public" key
-   3) Pégalas aquí abajo y sube este index.html a tu GitHub Pages
-   (La anon key es pública por diseño; la seguridad la da RLS)
+   🔑 CONEXIÓN SUPABASE (credenciales del proyecto YUWA)
+   La anon key es pública por diseño; la seguridad la da RLS:
+   lectura abierta para clientas, escritura solo autenticada.
    ══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://xvawoqkmqsuyjzijqhni.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2YXdvcWttcXN1eWp6aWpxaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MjAwMjEsImV4cCI6MjEwMjM5NjAyMX0.FnccIzdMbizEPFRYsDGaRq0OnNFq8EamnYEDUqGpMXU';
@@ -562,7 +556,6 @@ const $all = s => Array.prototype.slice.call(document.querySelectorAll(s));
 const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const pad2 = n => n < 10 ? '0' + n : String(n);
 const fmtPrice = n => (!n || n <= 0) ? 'Precio por confirmar' : ('$' + Number(n).toLocaleString('es-CO') + ' COP');
-const linesOf = t => String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean);
 const safeScrollTop = () => { try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); } };
 const syncHash = v => { try{ if(location.hash !== '#'+v) history.replaceState(null,'','#'+v); }catch(e){} };
 const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><rect width="100%" height="100%" fill="#F5EDDD"/><circle cx="320" cy="320" r="160" fill="none" stroke="#B8872C" stroke-width="3"/><text x="320" y="352" font-family="Georgia" font-size="96" fill="#B8872C" text-anchor="middle">YW</text></svg>');
@@ -574,9 +567,8 @@ function toast(msg){
 }
 
 /* ================= CLIENTE SUPABASE ================= */
-const SB_CONFIGURADO = SUPABASE_URL.indexOf('TU-PROYECTO') === -1 && SUPABASE_ANON_KEY.indexOf('PEGA_AQUI') === -1;
 let sb = null;
-if (SB_CONFIGURADO && window.supabase){
+if (window.supabase){
   try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ sb = null; }
 }
 
@@ -657,19 +649,17 @@ async function refreshAuth(){
   if(state.admin) await cargarProductos();
 }
 function updateAuthUI(){
-  const dot = $('#sbDot');
-  if(dot) dot.classList.toggle('on', !!sb);
   const help = $('#sbHelp');
-  if(help) help.innerHTML = SB_CONFIGURADO
-    ? (sb ? 'Conectado a <b>' + esc(SUPABASE_URL.replace('https://','')) + '</b>. ' + (state.admin ? 'Sesión admin activa ✓' : 'Inicia sesión para gestionar.') : 'No se pudo iniciar el cliente Supabase.')
-    : '⚠️ Configura <b>SUPABASE_URL</b> y <b>SUPABASE_ANON_KEY</b> al inicio del &lt;script&gt; de este index.html y súbelo de nuevo a GitHub.';
+  if(help) help.innerHTML = sb
+    ? ('Conectado a <b>' + esc(SUPABASE_URL.replace('https://','')) + '</b>. ' + (state.admin ? 'Sesión admin activa ✓' : 'Inicia sesión para gestionar el catálogo.'))
+    : 'No se pudo iniciar el cliente Supabase.';
   $('#loginCard').hidden = state.admin;
   $('#adminTools').hidden = !state.admin;
   $('#logoutBtn').hidden = !state.admin;
   $('#loginBtn').hidden = state.admin;
 }
 async function loginAdmin(){
-  if(!sb){ toast('Configura Supabase primero.'); return; }
+  if(!sb){ toast('Sin conexión con Supabase.'); return; }
   const email = $('#loginEmail').value.trim();
   const pass = $('#loginPass').value;
   const { error } = await sb.auth.signInWithPassword({ email, password: pass });
@@ -684,6 +674,7 @@ async function logoutAdmin(){
   toast('Sesión cerrada.');
   await cargarProductos();
   updateAuthUI();
+  renderView();
 }
 
 /* ================= NAVEGACIÓN ================= */
@@ -761,7 +752,7 @@ function renderCatalog(){
   const cats = categoryNames(prods);
   const chipsZone = $('#catChips');
   if(!state.loaded){ $('#catalogBody').innerHTML = '<div class="loading">Cargando productos desde Supabase…</div>'; return; }
-  if(!sb){ $('#catalogBody').innerHTML = '<div class="empty-state"><h3>Catálogo sin conectar</h3><p>Configura SUPABASE_URL y SUPABASE_ANON_KEY al inicio del script de index.html.</p></div>'; return; }
+  if(!sb){ $('#catalogBody').innerHTML = '<div class="empty-state"><h3>Catálogo sin conectar</h3><p>No se pudo iniciar el cliente de Supabase.</p></div>'; return; }
   let chipsHtml = '<button class="chip'+(!state.cat?' active':'')+'" data-chip="">Todas</button>';
   cats.forEach(c => { chipsHtml += '<button class="chip'+(state.cat===c?' active':'')+'" data-chip="'+esc(c)+'">'+esc(c)+'</button>'; });
   chipsZone.innerHTML = chipsHtml;
@@ -820,7 +811,7 @@ function openModal(id){
     (p.tagline?'<p class="m-desc">'+esc(p.tagline)+'</p>':'')+
     '<div class="m-meta"><span class="m-tag gold">'+esc(p.cat)+'</span><span class="m-tag">'+esc(p.size)+'</span><span class="m-tag">'+esc(p.step)+'</span></div>'+
     '<div class="m-price">'+fmtPrice(p.price)+'</div>';
-  if(p.benefits && p.benefits.length) html += '<div class="m-block"><h4>Beneficios</h4><ul>'+p.benefits.map(b=>'<li>'+esc(b)+'</li>').join('')+'</ul></div>';
+  if(p.benefits && p.benefits.length) html += '<div class="m-block"><h4>Ingredientes activos y beneficios</h4><ul>'+p.beneficios.map(b=>'<li>'+esc(b)+'</li>').join('')+'</ul></div>';
   if(p.usos && p.usos.length) html += '<div class="m-block"><h4>Uso sugerido</h4><ul>'+p.usos.map(u=>'<li>'+esc(u)+'</li>').join('')+'</ul></div>';
   html += '<div class="m-foot"><span class="m-routine">'+timeIcons(p.time)+esc(p.time)+' · '+esc(p.step)+'</span>'+
     '<a class="btn btn-green" target="_blank" rel="noopener" href="https://wa.me/573148003634?text='+encodeURIComponent('Hola YUWA 🤍 Me interesa: '+p.brand+' '+p.name)+'">Pedir por WhatsApp</a></div>';
@@ -895,6 +886,41 @@ async function subirImagenSupabase(file){
   return sb.storage.from('productos').getPublicUrl(path).data.publicUrl;
 }
 
+/* ================= ADMIN: PARES INGREDIENTE/BENEFICIO ================= */
+function addPairRow(ing, ben){
+  const zone = $('#pairsZone'); if(!zone) return;
+  const row = document.createElement('div');
+  row.className = 'pair-row';
+  row.innerHTML = '<input class="pair-ing" placeholder="Ingrediente activo (ej: Extractos de Arroz)" value="'+esc(ing||'')+'">'+
+    '<input class="pair-ben" placeholder="Beneficio (ej: Rico en aminoácidos que nutren e iluminan)" value="'+esc(ben||'')+'">'+
+    '<button type="button" class="pair-del" aria-label="Quitar">✕</button>';
+  row.querySelector('.pair-del').addEventListener('click', ()=>row.remove());
+  zone.appendChild(row);
+}
+function collectPairs(){
+  const out = [];
+  $all('.pair-row').forEach(r=>{
+    const ing = r.querySelector('.pair-ing').value.trim();
+    const ben = r.querySelector('.pair-ben').value.trim();
+    if(ing && ben) out.push(ing + ': ' + ben);
+    else if(ing || ben) out.push(ing || ben);
+  });
+  return out;
+}
+function parsePair(s){
+  const i = String(s).indexOf(':');
+  if(i > 0 && i < 80) return [String(s).slice(0,i).trim(), String(s).slice(i+1).trim()];
+  return ['', String(s)];
+}
+function resetPairs(rows){
+  const zone = $('#pairsZone'); if(!zone) return;
+  zone.innerHTML = '';
+  if(rows && rows.length){ rows.forEach(r=>addPairRow(r[0], r[1])); }
+  else addPairRow('', '');
+}
+const addPairBtn = $('#addPair');
+if(addPairBtn) addPairBtn.addEventListener('click', ()=>addPairRow('', ''));
+
 /* ================= ADMIN: FORMULARIO ================= */
 function refreshAdminSelects(){
   const cats = categoryNames(state.products);
@@ -916,29 +942,23 @@ if(productForm) productForm.addEventListener('submit', async e => {
   const precio = Number($('#fPrice').value);
   const tamano = $('#fSize').value.trim();
   const categoria = $('#fCat').value==='__new__' ? $('#fCatNew').value.trim() : $('#fCat').value;
-  const beneficios = linesOf($('#fBenefits').value);
-  const usos = linesOf($('#fUsos').value);
+  const beneficios = collectPairs();
   if(!nombre || !marca || !tamano || !categoria){ toast('Completa nombre, marca, categoría y presentación.'); return; }
+  if(!editingId && !pendingFile){ toast('Agrega la imagen del producto.'); return; }
   try{
-    let imagen_url = $('#fImgUrl').value.trim();
-    if(pendingFile){ imagen_url = await subirImagenSupabase(pendingFile); }
     const payload = { nombre, descripcion, marca, precio_cop: precio || 0, categoria, tamano,
-      momento_uso: $('#fTime').value, paso_rutina: $('#fStep').value, imagen_url, beneficios, activo: true };
-    let pid = editingId;
+      momento_uso: $('#fTime').value, paso_rutina: $('#fStep').value, beneficios, activo: true };
     if(editingId){
+      if(pendingFile){ payload.imagen_url = await subirImagenSupabase(pendingFile); }
       const { error } = await sb.from('products').update(payload).eq('id', editingId);
       if(error) throw new Error(error.message);
-      await sb.from('usos_sugeridos').delete().eq('product_id', editingId);
+      toast('Producto actualizado ✓');
     } else {
-      const { data, error } = await sb.from('products').insert(payload).select().single();
+      payload.imagen_url = await subirImagenSupabase(pendingFile);
+      const { error } = await sb.from('products').insert(payload);
       if(error) throw new Error(error.message);
-      pid = data.id;
+      toast('Producto publicado en Supabase ✓');
     }
-    if(usos.length){
-      const { error: eu } = await sb.from('usos_sugeridos').insert(usos.map((t,i)=>({ product_id: pid, texto: t, orden: i+1 })));
-      if(eu) throw new Error(eu.message);
-    }
-    toast(editingId ? 'Producto actualizado ✓' : 'Producto publicado en Supabase ✓');
     resetForm();
     await cargarProductos();
     renderAdmin();
@@ -952,6 +972,7 @@ function resetForm(){
   const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Publicar en Supabase';
   const ce=$('#cancelEdit'); if(ce) ce.hidden=true;
   const cn=$('#catNewRow'); if(cn) cn.hidden=true;
+  resetPairs();
   refreshAdminSelects();
 }
 const cancelEditBtn = $('#cancelEdit');
@@ -966,11 +987,9 @@ function startEdit(id){
   if(!Array.from(sel.options).some(o=>o.value===p.cat)){ const o=document.createElement('option'); o.value=p.cat; o.textContent=p.cat; sel.appendChild(o); }
   sel.value = p.cat;
   $('#fTime').value = p.time; $('#fStep').value = p.step;
-  $('#fBenefits').value = (p.benefits||[]).join('\n');
-  $('#fUsos').value = (p.usos||[]).join('\n');
-  $('#fImgUrl').value = (p.img && p.img.indexOf('data:')!==0) ? p.img : '';
-  if(p.img) dz.innerHTML = '<img src="'+esc(p.img)+'" alt="Vista previa">';
+  resetPairs((p.beneficios||[]).map(parsePair));
   pendingFile = null;
+  if(p.img) dz.innerHTML = '<img src="'+esc(p.img)+'" alt="Vista previa">';
   const ft=$('#formTitle'); if(ft) ft.textContent='Editando: '+p.name;
   const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Guardar cambios';
   const ce=$('#cancelEdit'); if(ce) ce.hidden=false;
@@ -984,7 +1003,7 @@ async function toggleActivo(id){
   await cargarProductos(); renderAdmin();
 }
 async function deleteProduct(id){
-  if(!confirm('¿Eliminar definitivamente este producto y sus usos sugeridos?')) return;
+  if(!confirm('¿Eliminar definitivamente este producto?')) return;
   const { error } = await sb.from('products').delete().eq('id', id);
   if(error){ toast('Error: '+error.message); return; }
   toast('Producto eliminado.');
@@ -1010,7 +1029,7 @@ function renderAdmin(){
 const loginBtn = $('#loginBtn'); if(loginBtn) loginBtn.addEventListener('click', loginAdmin);
 const logoutBtn = $('#logoutBtn'); if(logoutBtn) logoutBtn.addEventListener('click', logoutAdmin);
 
-/* ================= PDF ALTA CALIDAD ================= */
+/* ================= PDF ALTA CALIDAD (solo admin) ================= */
 function loadImageAsDataUrl(src){
   return new Promise(resolve => {
     if(!src){ resolve(null); return; }
@@ -1152,10 +1171,6 @@ function buildPdf(prods, imgMap){
             after+=bl.length*3.9+2.2;
           });
         }
-        if(p.usos&&p.usos.length){
-          doc.setFont('helvetica','italic'); doc.setFontSize(7.8); doc.setTextColor(107,84,38);
-          const ul=doc.splitTextToSize('Uso: '+p.usos[0], rw); doc.text(ul, rx, after+3);
-        }
       });
       footer(n); return;
     }
@@ -1180,7 +1195,6 @@ function buildPdf(prods, imgMap){
   });
   doc.save('yuwa_catalogo_2026.pdf');
 }
-const pdfBtn=$('#pdfBtn'); if(pdfBtn) pdfBtn.addEventListener('click', generateCatalogPDF);
 const pdfBtn2=$('#pdfBtn2'); if(pdfBtn2) pdfBtn2.addEventListener('click', generateCatalogPDF);
 
 /* ================= EXPORT JSON ================= */
@@ -1213,6 +1227,7 @@ function observeReveals(){ $all('.reveal:not(.in)').forEach(el=>{ if(revealObser
 
 /* ================= INIT ================= */
 (async function init(){
+  resetPairs();
   updateAuthUI();
   if(sb){
     sb.auth.onAuthStateChange(()=>{ refreshAuth(); });
