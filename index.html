@@ -498,8 +498,8 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       </div>
 
       <div class="backup-zone">
-        <h3>Versión física</h3>
-        <p class="sub">Descarga el PDF en alta calidad: portada con 4 marcas, rutina llamativa y productos por categoría con imagen grande. Solo visible para el administrador.</p>
+        <h3>Versión física · Motor PDF v3</h3>
+        <p class="sub">Portada con 4 marcas, rutina renovada, salto de página por categoría y un producto por página con imagen grande, precio y presentación llamativos. Si el PDF descargado no muestra este diseño, verifica que GitHub Pages sirva la última versión del index.html (Ctrl+F5 o revisar Actions).</p>
         <div class="backup-actions">
           <button class="btn btn-gold" id="pdfBtn2">Descargar PDF alta calidad</button>
         </div>
@@ -563,6 +563,9 @@ const pad2 = n => n < 10 ? '0' + n : String(n);
 const fmtPrice = n => (!n || n <= 0) ? 'Precio por confirmar' : ('$' + Number(n).toLocaleString('es-CO') + ' COP');
 const safeScrollTop = () => { try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); } };
 const syncHash = v => { try{ if(location.hash !== '#'+v) history.replaceState(null,'','#'+v); }catch(e){} };
+/* Saneador de glifos para fuentes estándar del PDF */
+const PT = s => Array.isArray(s) ? s.map(PT) : String(s == null ? '' : s)
+  .replace(/◇/g,'·').replace(/◆/g,'·').replace(/→/g,'-').replace(/✕/g,'x').replace(/⤢/g,'').replace(/☀/g,'').replace(/☾/g,'').replace(/·/g,'·');
 const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><rect width="100%" height="100%" fill="#F5EDDD"/><circle cx="320" cy="320" r="160" fill="none" stroke="#B8872C" stroke-width="3"/><text x="320" y="352" font-family="Georgia" font-size="96" fill="#B8872C" text-anchor="middle">YW</text></svg>');
 function toast(msg){
   const zone = $('#toastZone'); if(!zone) return;
@@ -1125,15 +1128,17 @@ if(bulkUploadBtn) bulkUploadBtn.addEventListener('click', async ()=>{
 const bulkClearBtn = $('#bulkClear');
 if(bulkClearBtn) bulkClearBtn.addEventListener('click', ()=>{ bulkRows=[]; renderBulkList(); toast('Lista vaciada.'); });
 
-/* ================= PDF ALTA CALIDAD (rediseñado) ================= */
+/* ================= PDF v3 (robusto, alta calidad) ================= */
 function loadImageAsDataUrl(src){
   return new Promise(resolve => {
     if(!src){ resolve(null); return; }
     if(src.indexOf('data:')===0){ resolve(src); return; }
     let done=false; const fin=v=>{ if(!done){ done=true; resolve(v); } };
-    fetch(src, {mode:'cors'}).then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(b=>{
-      const fr=new FileReader(); fr.onload=()=>fin(fr.result); fr.onerror=()=>fin(null); fr.readAsDataURL(b);
-    }).catch(()=>fin(null));
+    try{
+      fetch(src, {mode:'cors'}).then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(b=>{
+        const fr=new FileReader(); fr.onload=()=>fin(fr.result); fr.onerror=()=>fin(null); fr.readAsDataURL(b);
+      }).catch(()=>fin(null));
+    }catch(e){ fin(null); }
     setTimeout(()=>fin(null), 9000);
   });
 }
@@ -1142,21 +1147,26 @@ function generateCatalogPDF(){
   if(!(window.jspdf && window.jspdf.jsPDF)){ toast('No se pudo cargar el generador de PDF.'); return; }
   const prods = visibleProducts();
   if(!prods.length){ toast('Aún no hay productos para el PDF.'); return; }
-  toast('Preparando PDF en alta calidad…');
+  toast('Preparando PDF v3 en alta calidad…');
   Promise.all(prods.map(p => loadImageAsDataUrl(p.img).then(d=>({ id:p.id, data:d })))).then(list => {
     const imgMap = {}; list.forEach(x=>{ imgMap[x.id]=x.data; });
-    try{ buildPdf(prods, imgMap); toast('PDF descargado ✓'); }
-    catch(e){ toast('No se pudo generar el PDF.'); }
+    try{ buildPdf(prods, imgMap); toast('PDF v3 descargado ✓'); }
+    catch(e){ console.error(e); toast('No se pudo generar el PDF: revisa la consola.'); }
   });
 }
 function buildPdf(prods, imgMap){
   const J = window.jspdf.jsPDF;
   const doc = new J({unit:'mm', format:'a4', compress:true});
+  /* Sanea todos los textos (glifos fuera de WinAnsi) */
+  const _t = doc.text.bind(doc);
+  doc.text = function(s, ...a){ return _t(PT(s), ...a); };
+  const _s = doc.splitTextToSize.bind(doc);
+  doc.splitTextToSize = function(s, ...a){ return _s(PT(s), ...a); };
+
   const W=210,H=297,M=14;
   const GOLD=[184,135,44], GREEN=[82,107,91], INK=[30,27,22], SOFT=[110,100,85], PALE=[243,232,210], LINEC=[226,216,198], WHITE=[255,253,248];
   const catList = categoryNames(prods);
 
-  /* Layout: portada, contenido, rutina (2), productos (1 por página), contacto */
   const layout = [{t:'cover'},{t:'toc'},{t:'routine',part:1},{t:'routine',part:2}];
   const catIndexMap = {};
   catList.forEach((c,ci)=>{
@@ -1169,18 +1179,21 @@ function buildPdf(prods, imgMap){
   const catPages={}; layout.forEach((e,i)=>{ if(e.t==='prod' && catPages[e.cat]===undefined) catPages[e.cat]=i+1; });
 
   const bg=()=>{ doc.setFillColor(247,242,233); doc.rect(0,0,W,H,'F'); };
-  const footer=n=>{ doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text('YUWA · Belleza coreana, elegida para tu piel. · Pág. '+n, W/2, H-7, {align:'center'}); };
+  const footer=n=>{ doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text('YUWA · Belleza coreana, elegida para tu piel. · PDF v3 · Pág. '+n, W/2, H-7, {align:'center'}); };
   const diamond=(x,y,s,col)=>{ doc.setFillColor(col[0],col[1],col[2]); doc.triangle(x,y-s,x+s,y,x,y+s,'F'); doc.triangle(x,y-s,x-s,y,x,y+s,'F'); };
   const emblem=(cx,cy,r)=>{ doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.circle(cx,cy,r,'S'); doc.setFont('times','bold'); doc.setFontSize(r*1.1); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('YW',cx,cy+r*0.35,{align:'center'}); doc.setLineWidth(0.35); doc.line(cx-r-42,cy,cx-r-6,cy); doc.line(cx+r+6,cy,cx+r+42,cy); diamond(cx-r-9,cy,1.8,GOLD); diamond(cx+r+9,cy,1.8,GOLD); };
-  const addImg=(data,x,y,w,h)=>{
+  const safeAddImage=(data,x,y,w,h)=>{
     doc.setFillColor(WHITE[0],WHITE[1],WHITE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.6);
     doc.roundedRect(x-2,y-2,w+4,h+4,4,4,'FD');
-    if(!data){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(12); doc.text('YW',x+w/2,y+h/2,{align:'center'}); return; }
-    const fmt=data.indexOf('image/png')!==-1?'PNG':'JPEG';
-    doc.addImage(data,fmt,x,y,w,h,undefined,'FAST');
+    if(!data || data.indexOf('data:image/svg')===0){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(12); doc.text('YW',x+w/2,y+h/2,{align:'center'}); return; }
+    try{
+      const fmt = data.indexOf('data:image/png')===0 ? 'PNG' : 'JPEG';
+      doc.addImage(data, fmt, x, y, w, h, undefined, 'FAST');
+    }catch(e){
+      doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(12); doc.text('YW',x+w/2,y+h/2,{align:'center'});
+    }
   };
 
-  /* ---------- Página de producto: imagen GRANDE + datos llamativos ---------- */
   function drawProduct(p, imgData, startY){
     doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
     doc.text(String(p.brand).toUpperCase(), M, startY);
@@ -1189,7 +1202,7 @@ function buildPdf(prods, imgMap){
     doc.text(nl, M, startY+8);
     const nameEnd = startY+8+(nl.length-1)*8.5;
     const imgSize=125, ix=(W-imgSize)/2, iy=nameEnd+6;
-    addImg(imgData, ix, iy, imgSize, imgSize);
+    safeAddImage(imgData, ix, iy, imgSize, imgSize);
     const yB = iy+imgSize+12;
     doc.setFont('helvetica','bold'); doc.setFontSize(15);
     const ptxt = fmtPrice(p.price);
@@ -1205,10 +1218,8 @@ function buildPdf(prods, imgMap){
     doc.text('Momento de uso: '+p.time+'   ·   Paso de rutina: '+p.step, M, yB+22);
   }
 
-  /* ---------- Encabezado creativo de categoría ---------- */
   function catHeader(cat, ci, acc){
     doc.setFillColor(acc[0],acc[1],acc[2]); doc.rect(0,0,W,42,'F');
-    doc.setFillColor(255,255,255);
     doc.setFont('times','bold'); doc.setFontSize(46); doc.setTextColor(255,255,255);
     doc.text(pad2(ci), W-M, 30, {align:'right'});
     doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
@@ -1223,127 +1234,124 @@ function buildPdf(prods, imgMap){
   layout.forEach((entry,idx)=>{
     if(idx>0) doc.addPage();
     const n=idx+1; bg();
-
-    /* ----- PORTADA: 4 imágenes de 4 marcas distintas ----- */
-    if(entry.t==='cover'){
-      emblem(W/2,36,11);
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-      doc.text('C O L E C C I Ó N   2 0 2 6   ·   Y U W A', W/2, 56, {align:'center'});
-      doc.setFont('times','bold'); doc.setFontSize(34); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Catálogo de', W/2, 70, {align:'center'}); doc.text('Skincare Coreano', W/2, 84, {align:'center'});
-      doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-      doc.text('Belleza coreana, elegida para tu piel.', W/2, 94, {align:'center'});
-      const picks=[]; const seenB=[];
-      prods.forEach(p=>{ if(picks.length<4 && seenB.indexOf(p.brand)===-1){ seenB.push(p.brand); picks.push(p); } });
-      prods.forEach(p=>{ if(picks.length<4 && picks.indexOf(p)===-1) picks.push(p); });
-      const size=62, gap=6, total=2*size+gap, x0=(W-total)/2, y0=104;
-      picks.forEach((p,i)=>{ addImg(imgMap[p.id], x0+(i%2)*(size+gap), y0+Math.floor(i/2)*(size+gap), size, size); });
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-      doc.text(prods.length+' productos · '+catList.length+' categorías · Envíos a toda Colombia', W/2, y0+total+12, {align:'center'});
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.line(M,H-24,W-M,H-24);
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-      doc.text('WhatsApp +57 314 800 3634   ·   @yuwa_co', W/2, H-16, {align:'center'});
-      footer(n); return;
-    }
-
-    /* ----- CONTENIDO con hipervínculos ----- */
-    if(entry.t==='toc'){
-      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Contenido', M, 28);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,32,W-M,32);
-      let y=44;
-      const tocRow=(num,title,page,sub)=>{
-        doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.textWithLink(num, M, y, {pageNumber:page});
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(INK[0],INK[1],INK[2]); doc.textWithLink(title, M+12, y, {pageNumber:page});
-        if(sub){ doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(sub, M+12, y+4.5); }
-        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        const ptxt=String(page); doc.textWithLink(ptxt, W-M-doc.getTextWidth(ptxt), y, {pageNumber:page});
-        doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2); doc.line(M,y+8,W-M,y+8);
-        y += sub?14:12;
-      };
-      tocRow('01','Tu rutina YUWA', routinePage, 'El ritual coreano paso a paso, AM y PM');
-      catList.forEach(c=>tocRow(pad2(catIndexMap[c]), c, catPages[c], descFor(c)));
-      tocRow(pad2(catList.length+2),'Pedidos y contacto', contactPage, 'WhatsApp · Instagram · Envíos · Garantía');
-      footer(n); return;
-    }
-
-    /* ----- RUTINA llamativa (2 páginas) ----- */
-    if(entry.t==='routine'){
-      doc.setFillColor(GREEN[0],GREEN[1],GREEN[2]); doc.rect(0,0,W,40,'F');
-      diamond(W-M-4, 8, 2, GOLD); diamond(W-M-12, 12, 1.4, GOLD);
-      doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(27);
-      doc.text('Tu rutina YUWA', M, 17);
-      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(228,234,228);
-      doc.text('Cada paso prepara el siguiente para revelar una piel más equilibrada, luminosa y confortable.', M, 26);
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(217,188,138);
-      doc.text(entry.part===1 ? 'PASOS 01 – 04' : 'PASOS 05 – 07', M, 34);
-      const steps = entry.part===1 ? ROUTINE.slice(0,4) : ROUTINE.slice(4);
-      let y=52;
-      steps.forEach(s=>{
-        doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.circle(M+9, y+9, 9, 'F');
-        doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(12);
-        doc.text(s.n, M+9, y+10.5, {align:'center'});
-        doc.setTextColor(INK[0],INK[1],INK[2]); doc.setFont('helvetica','bold'); doc.setFontSize(13.5);
-        doc.text(s.title, M+24, y+7);
-        const chip=(s.am&&s.pm)?'AM · PM':(s.am?'AM':'PM');
-        doc.setFont('helvetica','bold'); doc.setFontSize(8);
-        const cw=doc.getTextWidth(chip)+8;
-        doc.setDrawColor(GREEN[0],GREEN[1],GREEN[2]); doc.setLineWidth(0.4); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-        doc.roundedRect(W-M-cw, y+2, cw, 6, 3,3,'S');
-        doc.text(chip, W-M-cw+4, y+6.2);
-        doc.setFont('helvetica','normal'); doc.setFontSize(8.8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        const dl=doc.splitTextToSize(s.desc, W-M-(M+24));
-        doc.text(dl, M+24, y+13);
-        const dh=dl.length*3.9;
-        doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(107,84,38);
-        const tl=doc.splitTextToSize('Beauty tip: '+s.tip, W-M-(M+24));
-        doc.text(tl, M+24, y+13+dh+2);
-        y += 13+dh+2+tl.length*3.4+9;
-        doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2);
-        if(s!==steps[steps.length-1]) doc.line(M, y-6, W-M, y-6);
-      });
-      if(entry.part===2){
-        doc.setFillColor(PALE[0],PALE[1],PALE[2]); doc.roundedRect(M, y, W-2*M, 16, 3,3,'F');
-        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.roundedRect(M, y, W-2*M, 16, 3,3,'S');
-        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(107,84,38);
-        doc.text('◇  La constancia es tu mejor activo: disfruta cada paso, sin perfeccionismo.', W/2, y+10, {align:'center'});
+    try{
+      if(entry.t==='cover'){
+        emblem(W/2,36,11);
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+        doc.text('C O L E C C I Ó N   2 0 2 6   ·   Y U W A', W/2, 56, {align:'center'});
+        doc.setFont('times','bold'); doc.setFontSize(34); doc.setTextColor(INK[0],INK[1],INK[2]);
+        doc.text('Catálogo de', W/2, 70, {align:'center'}); doc.text('Skincare Coreano', W/2, 84, {align:'center'});
+        doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
+        doc.text('Belleza coreana, elegida para tu piel.', W/2, 94, {align:'center'});
+        const picks=[]; const seenB=[];
+        prods.forEach(p=>{ if(picks.length<4 && seenB.indexOf(p.brand)===-1){ seenB.push(p.brand); picks.push(p); } });
+        prods.forEach(p=>{ if(picks.length<4 && picks.indexOf(p)===-1) picks.push(p); });
+        const size=62, gap=6, total=2*size+gap, x0=(W-total)/2, y0=104;
+        picks.forEach((p,i)=>{ safeAddImage(imgMap[p.id], x0+(i%2)*(size+gap), y0+Math.floor(i/2)*(size+gap), size, size); });
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
+        doc.text(prods.length+' productos · '+catList.length+' categorías · Envíos a toda Colombia', W/2, y0+total+12, {align:'center'});
+        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.line(M,H-24,W-M,H-24);
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+        doc.text('WhatsApp +57 314 800 3634   ·   @yuwa_co', W/2, H-16, {align:'center'});
+        footer(n); return;
       }
-      footer(n); return;
-    }
-
-    /* ----- PRODUCTO con salto de página por categoría ----- */
-    if(entry.t==='prod'){
-      const acc = hexToRgb(accentFor(entry.cat));
-      if(entry.first){ catHeader(entry.cat, entry.ci, acc); drawProduct(entry.p, imgMap[entry.p.id], 54); }
-      else {
-        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(acc[0],acc[1],acc[2]);
-        doc.text(pad2(entry.ci)+' · '+entry.cat.toUpperCase(), M, 16);
-        doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.5); doc.line(M, 20, W-M, 20);
-        drawProduct(entry.p, imgMap[entry.p.id], 30);
+      if(entry.t==='toc'){
+        doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Contenido', M, 28);
+        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,32,W-M,32);
+        let y=44;
+        const tocRow=(num,title,page,sub)=>{
+          doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.textWithLink(num, M, y, {pageNumber:page});
+          doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(INK[0],INK[1],INK[2]); doc.textWithLink(title, M+12, y, {pageNumber:page});
+          if(sub){ doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(sub, M+12, y+4.5); }
+          doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+          const ptxt=String(page); doc.textWithLink(ptxt, W-M-doc.getTextWidth(ptxt), y, {pageNumber:page});
+          doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2); doc.line(M,y+8,W-M,y+8);
+          y += sub?14:12;
+        };
+        tocRow('01','Tu rutina YUWA', routinePage, 'El ritual coreano paso a paso, AM y PM');
+        catList.forEach(c=>tocRow(pad2(catIndexMap[c]), c, catPages[c], descFor(c)));
+        tocRow(pad2(catList.length+2),'Pedidos y contacto', contactPage, 'WhatsApp · Instagram · Envíos · Garantía');
+        footer(n); return;
       }
-      footer(n); return;
-    }
-
-    /* ----- CONTACTO ----- */
-    if(entry.t==='contact'){
-      doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Pedidos y contacto', M, 30);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,34,W-M,34);
-      let cy=48;
-      [['01 · WhatsApp','+57 314 800 3634 · Asesoría y pedidos directos.'],
-       ['02 · Instagram','@yuwa_co · Novedades y contenido de rutina.'],
-       ['03 · Envíos','A toda Colombia · Empaque protegido y cuidado.'],
-       ['04 · Garantía','Productos 100% originales · Importación verificada.']].forEach(row=>{
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(row[0], M, cy);
-        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(row[1], M, cy+6);
-        cy+=16;
-      });
-      emblem(W/2, H-52, 10);
-      doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('GRACIAS POR ELEGIR YUWA', W/2, H-32, {align:'center'});
-      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-      doc.text('Skincare coreano para una piel sana, luminosa y cuidada.', W/2, H-26, {align:'center'});
+      if(entry.t==='routine'){
+        doc.setFillColor(GREEN[0],GREEN[1],GREEN[2]); doc.rect(0,0,W,40,'F');
+        diamond(W-M-4, 8, 2, GOLD); diamond(W-M-12, 12, 1.4, GOLD);
+        doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(27);
+        doc.text('Tu rutina YUWA', M, 17);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(228,234,228);
+        doc.text('Cada paso prepara el siguiente para revelar una piel más equilibrada, luminosa y confortable.', M, 26);
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(217,188,138);
+        doc.text(entry.part===1 ? 'PASOS 01 - 04' : 'PASOS 05 - 07', M, 34);
+        const steps = entry.part===1 ? ROUTINE.slice(0,4) : ROUTINE.slice(4);
+        let y=52;
+        steps.forEach(s=>{
+          doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.circle(M+9, y+9, 9, 'F');
+          doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(12);
+          doc.text(s.n, M+9, y+10.5, {align:'center'});
+          doc.setTextColor(INK[0],INK[1],INK[2]); doc.setFont('helvetica','bold'); doc.setFontSize(13.5);
+          doc.text(s.title, M+24, y+7);
+          const chip=(s.am&&s.pm)?'AM · PM':(s.am?'AM':'PM');
+          doc.setFont('helvetica','bold'); doc.setFontSize(8);
+          const cw=doc.getTextWidth(chip)+8;
+          doc.setDrawColor(GREEN[0],GREEN[1],GREEN[2]); doc.setLineWidth(0.4); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
+          doc.roundedRect(W-M-cw, y+2, cw, 6, 3,3,'S');
+          doc.text(chip, W-M-cw+4, y+6.2);
+          doc.setFont('helvetica','normal'); doc.setFontSize(8.8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
+          const dl=doc.splitTextToSize(s.desc, W-M-(M+24));
+          doc.text(dl, M+24, y+13);
+          const dh=dl.length*3.9;
+          doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(107,84,38);
+          const tl=doc.splitTextToSize('Beauty tip: '+s.tip, W-M-(M+24));
+          doc.text(tl, M+24, y+13+dh+2);
+          y += 13+dh+2+tl.length*3.4+9;
+          doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2);
+          if(s!==steps[steps.length-1]) doc.line(M, y-6, W-M, y-6);
+        });
+        if(entry.part===2){
+          doc.setFillColor(PALE[0],PALE[1],PALE[2]); doc.roundedRect(M, y, W-2*M, 16, 3,3,'F');
+          doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.roundedRect(M, y, W-2*M, 16, 3,3,'S');
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(107,84,38);
+          doc.text('·  La constancia es tu mejor activo: disfruta cada paso, sin perfeccionismo.', W/2, y+10, {align:'center'});
+        }
+        footer(n); return;
+      }
+      if(entry.t==='prod'){
+        const acc = hexToRgb(accentFor(entry.cat));
+        if(entry.first){ catHeader(entry.cat, entry.ci, acc); drawProduct(entry.p, imgMap[entry.p.id], 54); }
+        else {
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(acc[0],acc[1],acc[2]);
+          doc.text(pad2(entry.ci)+' · '+entry.cat.toUpperCase(), M, 16);
+          doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.5); doc.line(M, 20, W-M, 20);
+          drawProduct(entry.p, imgMap[entry.p.id], 30);
+        }
+        footer(n); return;
+      }
+      if(entry.t==='contact'){
+        doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Pedidos y contacto', M, 30);
+        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,34,W-M,34);
+        let cy=48;
+        [['01 · WhatsApp','+57 314 800 3634 · Asesoría y pedidos directos.'],
+         ['02 · Instagram','@yuwa_co · Novedades y contenido de rutina.'],
+         ['03 · Envíos','A toda Colombia · Empaque protegido y cuidado.'],
+         ['04 · Garantía','Productos 100% originales · Importación verificada.']].forEach(row=>{
+          doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(row[0], M, cy);
+          doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(row[1], M, cy+6);
+          cy+=16;
+        });
+        emblem(W/2, H-52, 10);
+        doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('GRACIAS POR ELEGIR YUWA', W/2, H-32, {align:'center'});
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
+        doc.text('Skincare coreano para una piel sana, luminosa y cuidada.', W/2, H-26, {align:'center'});
+        footer(n);
+      }
+    }catch(pageErr){
+      console.error('Error en página '+n, pageErr);
+      doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(INK[0],INK[1],INK[2]);
+      doc.text('YUWA · página en recuperación', M, 40);
       footer(n);
     }
   });
-  doc.save('yuwa_catalogo_2026.pdf');
+  doc.save('yuwa_catalogo_2026_v3.pdf');
 }
 const pdfBtn2=$('#pdfBtn2'); if(pdfBtn2) pdfBtn2.addEventListener('click', generateCatalogPDF);
 
