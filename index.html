@@ -415,20 +415,20 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
   </div>
 </section>
 
-<!-- Panel oculto: acceso solo mediante https://skincareyuwa.github.io/#admin -->
+<!-- Panel privado: acceso solo mediante https://skincareyuwa.github.io/#admin -->
 <section class="view" id="view-admin">
   <div class="container">
     <div class="view-head">
-      <p class="kicker">Gestión · Supabase</p>
+      <p class="kicker">Zona privada</p>
       <h2>Panel de administrador</h2>
-      <p>Los productos, imágenes e ingredientes activos se guardan en Supabase y se publican al instante en el catálogo.</p>
+      <p>Acceso exclusivo del equipo YUWA.</p>
     </div>
 
     <div class="form-card login-card" id="loginCard">
       <h3>Iniciar sesión</h3>
-      <p class="sub">Usa el usuario admin creado en Supabase → Authentication.</p>
-      <div class="f-row"><label>Correo</label><input id="loginEmail" type="email" placeholder="admin@yuwa.co"></div>
-      <div class="f-row"><label>Contraseña</label><input id="loginPass" type="password" placeholder="••••••••"></div>
+      <p class="sub">Acceso exclusivo del equipo YUWA.</p>
+      <div class="f-row"><label>Correo</label><input id="loginEmail" type="email" placeholder="Correo electrónico" autocomplete="username"></div>
+      <div class="f-row"><label>Contraseña</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
       <div class="form-actions">
         <button class="btn btn-gold" id="loginBtn">Entrar</button>
         <button class="btn-ghost" id="logoutBtn" hidden>Cerrar sesión</button>
@@ -440,7 +440,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
       <div class="admin-wrap">
         <form class="form-card" id="productForm" novalidate>
           <h3 id="formTitle">Nuevo producto</h3>
-          <p class="sub">Se publica en Supabase (products + ingredientes_activos + Storage).</p>
+          <p class="sub">Se publica en la nube y aparece al instante en el catálogo.</p>
           <div class="f-row">
             <label>Imagen del producto *</label>
             <div class="dropzone" id="dropzone">
@@ -471,12 +471,12 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
             <button type="button" class="btn-ghost" id="addPair">＋ Agregar ingrediente</button>
           </div>
           <div class="form-actions">
-            <button type="submit" class="btn btn-gold" id="submitBtn">Publicar en Supabase</button>
+            <button type="submit" class="btn btn-gold" id="submitBtn">Publicar producto</button>
             <button type="button" class="btn-ghost" id="cancelEdit" hidden>Cancelar edición</button>
           </div>
         </form>
         <div class="admin-list">
-          <div class="admin-note">◇ Cada pareja se guarda en la tabla <b>ingredientes_activos</b> (columnas <b>ingrediente</b> y <b>beneficio</b>), lo que habilita la búsqueda y el filtro por activo en el catálogo. «Ocultar» desactiva el producto sin borrarlo.</div>
+          <div class="admin-note">◇ Los cambios se guardan en la nube y se publican al instante en el sitio. «Ocultar» desactiva el producto sin borrarlo.</div>
           <h3>Productos en la base (<span id="adminCount">0</span>)</h3>
           <div id="adminRows"></div>
         </div>
@@ -492,14 +492,14 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
         <input type="file" id="bulkInput" accept="image/png,image/*" multiple hidden>
         <div id="bulkList"></div>
         <div class="form-actions">
-          <button class="btn btn-gold" id="bulkUpload">Subir todo a Supabase</button>
+          <button class="btn btn-gold" id="bulkUpload">Subir todo</button>
           <button class="btn-ghost" id="bulkClear">Vaciar lista</button>
         </div>
       </div>
 
       <div class="backup-zone">
         <h3>Versión física</h3>
-        <p class="sub">Descarga el PDF en alta calidad (portada con imágenes, contenido con enlaces, rutina y productos por categoría). Solo visible para el administrador.</p>
+        <p class="sub">Descarga el PDF en alta calidad: portada con 4 marcas, rutina llamativa y productos por categoría con imagen grande. Solo visible para el administrador.</p>
         <div class="backup-actions">
           <button class="btn btn-gold" id="pdfBtn2">Descargar PDF alta calidad</button>
         </div>
@@ -524,7 +524,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
     <a href="https://wa.me/573148003634" target="_blank" rel="noopener">WhatsApp +57 314 800 3634</a>
     <a href="https://instagram.com/yuwa_co" target="_blank" rel="noopener">@yuwa_co</a>
   </div>
-  <p class="f-note">Catálogo virtual 2026 · Conectado a Supabase · Belleza coreana, elegida para tu piel.</p>
+  <p class="f-note">Catálogo virtual 2026 · Belleza coreana, elegida para tu piel.</p>
 </footer>
 
 <div class="modal" id="productModal" hidden>
@@ -551,7 +551,7 @@ footer .ftag{color:var(--gold-soft);margin:8px 0 22px;font-size:15px}
 <div id="toastZone"></div>
 
 <script>
-/* 🔑 CONEXIÓN SUPABASE (proyecto YUWA) */
+/* 🔑 CONEXIÓN A LA NUBE (credenciales internas del proyecto) */
 const SUPABASE_URL = 'https://xvawoqkmqsuyjzijqhni.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2YXdvcWttcXN1eWp6aWpxaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MjAwMjEsImV4cCI6MjEwMjM5NjAyMX0.FnccIzdMbizEPFRYsDGaRq0OnNFq8EamnYEDUqGpMXU';
 
@@ -571,7 +571,7 @@ function toast(msg){
   setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, 2600);
 }
 
-/* ================= CLIENTE SUPABASE ================= */
+/* ================= CLIENTE ================= */
 let sb = null;
 if (window.supabase){ try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ sb = null; } }
 
@@ -623,14 +623,14 @@ function categoryNames(prods){
   return base.concat(custom);
 }
 
-/* ================= LECTURA DESDE SUPABASE ================= */
+/* ================= LECTURA ================= */
 async function cargarProductos(){
   if(!sb){ state.loaded = true; renderView(); return; }
   const { data, error } = await sb
     .from('products')
     .select('*, ingredientes_activos(ingrediente, beneficio, orden)')
     .order('marca').order('nombre');
-  if(error){ toast('Error Supabase: ' + error.message); state.loaded = true; renderView(); return; }
+  if(error){ toast('Error al cargar productos.'); state.loaded = true; renderView(); return; }
   state.products = (data || []).map(p => ({
     id:p.id, name:p.nombre, tagline:p.descripcion || '', brand:p.marca,
     price:Number(p.precio_cop || 0), cat:p.categoria, size:p.tamano || '',
@@ -643,7 +643,7 @@ async function cargarProductos(){
   renderView();
 }
 
-/* ================= AUTENTICACIÓN ================= */
+/* ================= AUTENTICACIÓN (sin exponer datos) ================= */
 async function refreshAuth(){
   if(!sb){ updateAuthUI(); return; }
   const { data } = await sb.auth.getSession();
@@ -653,21 +653,19 @@ async function refreshAuth(){
 }
 function updateAuthUI(){
   const help = $('#sbHelp');
-  if(help) help.innerHTML = sb
-    ? ('Conectado a <b>' + esc(SUPABASE_URL.replace('https://','')) + '</b>. ' + (state.admin ? 'Sesión admin activa ✓' : 'Inicia sesión para gestionar el catálogo.'))
-    : 'No se pudo iniciar el cliente Supabase.';
+  if(help) help.innerHTML = state.admin ? 'Sesión activa ✓' : 'Panel privado del equipo YUWA.';
   $('#loginCard').hidden = state.admin;
   $('#adminTools').hidden = !state.admin;
   $('#logoutBtn').hidden = !state.admin;
   $('#loginBtn').hidden = state.admin;
 }
 async function loginAdmin(){
-  if(!sb){ toast('Sin conexión con Supabase.'); return; }
+  if(!sb){ toast('Servicio no disponible.'); return; }
   const email = $('#loginEmail').value.trim();
   const pass = $('#loginPass').value;
   const { error } = await sb.auth.signInWithPassword({ email, password: pass });
   if(error){ toast('Credenciales inválidas.'); return; }
-  toast('Sesión admin iniciada ✓');
+  toast('Sesión iniciada ✓');
   await refreshAuth(); renderAdmin();
 }
 async function logoutAdmin(){
@@ -723,7 +721,7 @@ function renderTOC(){
   observeReveals();
 }
 
-/* ================= RUTINA ================= */
+/* ================= RUTINA WEB ================= */
 function renderRoutine(){
   const grid = $('#routineGrid'); if(!grid) return;
   grid.innerHTML = ROUTINE.map(s => {
@@ -739,7 +737,7 @@ $all('.rt-btn').forEach(b => b.addEventListener('click', ()=>{
   renderRoutine();
 }));
 
-/* ================= CATÁLOGO (con filtro por ingrediente) ================= */
+/* ================= CATÁLOGO ================= */
 function filteredProducts(){
   let list = visibleProducts();
   if(state.cat) list = list.filter(p=>p.cat===state.cat);
@@ -755,8 +753,8 @@ function renderCatalog(){
   const prods = visibleProducts();
   const cats = categoryNames(prods);
   const chipsZone = $('#catChips');
-  if(!state.loaded){ $('#catalogBody').innerHTML = '<div class="loading">Cargando productos desde Supabase…</div>'; return; }
-  if(!sb){ $('#catalogBody').innerHTML = '<div class="empty-state"><h3>Catálogo sin conectar</h3><p>No se pudo iniciar el cliente de Supabase.</p></div>'; return; }
+  if(!state.loaded){ $('#catalogBody').innerHTML = '<div class="loading">Cargando productos…</div>'; return; }
+  if(!sb){ $('#catalogBody').innerHTML = '<div class="empty-state"><h3>Catálogo sin conectar</h3><p>No se pudo iniciar el servicio de datos.</p></div>'; return; }
   let chipsHtml = '<button class="chip'+(!state.cat?' active':'')+'" data-chip="">Todas</button>';
   cats.forEach(c => { chipsHtml += '<button class="chip'+(state.cat===c?' active':'')+'" data-chip="'+esc(c)+'">'+esc(c)+'</button>'; });
   chipsZone.innerHTML = chipsHtml;
@@ -891,7 +889,7 @@ async function subirImagenSupabase(file){
   return sb.storage.from('productos').getPublicUrl(path).data.publicUrl;
 }
 
-/* ================= ADMIN: PARES INGREDIENTE/BENEFICIO ================= */
+/* ================= ADMIN: PARES ================= */
 function addPairRow(ing, ben){
   const zone = $('#pairsZone'); if(!zone) return;
   const row = document.createElement('div');
@@ -965,20 +963,20 @@ if(productForm) productForm.addEventListener('submit', async e => {
       const { data, error } = await sb.from('products').insert(payload).select().single();
       if(error) throw new Error(error.message);
       pid = data.id;
-      toast('Producto publicado en Supabase ✓');
+      toast('Producto publicado ✓');
     }
     await savePairs(pid, pairs);
     resetForm();
     await cargarProductos();
     renderAdmin();
-  }catch(err){ toast('Error al guardar: ' + err.message); }
+  }catch(err){ toast('Error al guardar.'); }
 });
 function resetForm(){
   const f = $('#productForm'); if(f) f.reset();
   pendingFile = null; editingId = null;
   if(dz) dz.innerHTML = '<div class="dz-txt"><b>Haz clic o arrastra</b> una imagen aquí<br>JPG / PNG · cuadrada ideal (1:1)</div>';
   const ft=$('#formTitle'); if(ft) ft.textContent='Nuevo producto';
-  const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Publicar en Supabase';
+  const sbm=$('#submitBtn'); if(sbm) sbm.textContent='Publicar producto';
   const ce=$('#cancelEdit'); if(ce) ce.hidden=true;
   const cn=$('#catNewRow'); if(cn) cn.hidden=true;
   resetPairs();
@@ -1007,14 +1005,14 @@ function startEdit(id){
 async function toggleActivo(id){
   const p = state.products.find(x=>x.id===id); if(!p) return;
   const { error } = await sb.from('products').update({ activo: !p.activo }).eq('id', id);
-  if(error){ toast('Error: '+error.message); return; }
+  if(error){ toast('Error al actualizar.'); return; }
   toast(p.activo ? 'Producto ocultado del sitio.' : 'Producto visible de nuevo ✓');
   await cargarProductos(); renderAdmin();
 }
 async function deleteProduct(id){
   if(!confirm('¿Eliminar definitivamente este producto?')) return;
   const { error } = await sb.from('products').delete().eq('id', id);
-  if(error){ toast('Error: '+error.message); return; }
+  if(error){ toast('Error al eliminar.'); return; }
   toast('Producto eliminado.');
   await cargarProductos(); renderAdmin();
 }
@@ -1038,7 +1036,7 @@ function renderAdmin(){
 const loginBtn = $('#loginBtn'); if(loginBtn) loginBtn.addEventListener('click', loginAdmin);
 const logoutBtn = $('#logoutBtn'); if(logoutBtn) logoutBtn.addEventListener('click', logoutAdmin);
 
-/* ================= PROCESO TEMPORAL: CARGA INICIAL DE IMÁGENES ================= */
+/* ================= PROCESO TEMPORAL: CARGA INICIAL ================= */
 let bulkRows = [];
 const guessName = fname => String(fname||'').replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();
 const bulkDropzone = $('#bulkDropzone'), bulkInput = $('#bulkInput');
@@ -1115,7 +1113,7 @@ if(bulkUploadBtn) bulkUploadBtn.addEventListener('click', async ()=>{
       });
       if(error) throw new Error(error.message);
       ok++;
-    }catch(err){ toast('Fallo en "'+row.nombre+'": '+err.message); }
+    }catch(err){ toast('Fallo en "'+row.nombre+'".'); }
   }
   bulkRows = [];
   renderBulkList();
@@ -1127,7 +1125,7 @@ if(bulkUploadBtn) bulkUploadBtn.addEventListener('click', async ()=>{
 const bulkClearBtn = $('#bulkClear');
 if(bulkClearBtn) bulkClearBtn.addEventListener('click', ()=>{ bulkRows=[]; renderBulkList(); toast('Lista vaciada.'); });
 
-/* ================= PDF ALTA CALIDAD (solo admin) ================= */
+/* ================= PDF ALTA CALIDAD (rediseñado) ================= */
 function loadImageAsDataUrl(src){
   return new Promise(resolve => {
     if(!src){ resolve(null); return; }
@@ -1141,7 +1139,7 @@ function loadImageAsDataUrl(src){
 }
 const hexToRgb = hex => { const m=String(hex||'').replace('#',''); return m.length===6 ? [parseInt(m.substr(0,2),16),parseInt(m.substr(2,2),16),parseInt(m.substr(4,2),16)] : [184,135,44]; };
 function generateCatalogPDF(){
-  if(!(window.jspdf && window.jspdf.jsPDF)){ toast('No se pudo cargar jsPDF.'); return; }
+  if(!(window.jspdf && window.jspdf.jsPDF)){ toast('No se pudo cargar el generador de PDF.'); return; }
   const prods = visibleProducts();
   if(!prods.length){ toast('Aún no hay productos para el PDF.'); return; }
   toast('Preparando PDF en alta calidad…');
@@ -1157,43 +1155,98 @@ function buildPdf(prods, imgMap){
   const W=210,H=297,M=14;
   const GOLD=[184,135,44], GREEN=[82,107,91], INK=[30,27,22], SOFT=[110,100,85], PALE=[243,232,210], LINEC=[226,216,198], WHITE=[255,253,248];
   const catList = categoryNames(prods);
+
+  /* Layout: portada, contenido, rutina (2), productos (1 por página), contacto */
   const layout = [{t:'cover'},{t:'toc'},{t:'routine',part:1},{t:'routine',part:2}];
   const catIndexMap = {};
-  catList.forEach((c,ci)=>{ catIndexMap[c]=ci+2;
+  catList.forEach((c,ci)=>{
+    catIndexMap[c]=ci+2;
     const items = prods.filter(p=>p.cat===c);
-    if(!items.length){ layout.push({t:'cat',cat:c,items:[],first:true,ci:ci+2}); return; }
-    for(let i=0;i<items.length;i+=2) layout.push({t:'cat',cat:c,items:items.slice(i,i+2),first:i===0,ci:ci+2});
+    items.forEach((p,i)=> layout.push({t:'prod', p, first:i===0, cat:c, ci:ci+2}));
   });
   layout.push({t:'contact'});
   const routinePage=3, contactPage=layout.length;
-  const catPages={}; layout.forEach((e,i)=>{ if(e.t==='cat' && catPages[e.cat]===undefined) catPages[e.cat]=i+1; });
+  const catPages={}; layout.forEach((e,i)=>{ if(e.t==='prod' && catPages[e.cat]===undefined) catPages[e.cat]=i+1; });
+
   const bg=()=>{ doc.setFillColor(247,242,233); doc.rect(0,0,W,H,'F'); };
   const footer=n=>{ doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text('YUWA · Belleza coreana, elegida para tu piel. · Pág. '+n, W/2, H-7, {align:'center'}); };
-  const diamond=(x,y)=>{ doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.triangle(x,y-1.8,x+1.8,y,x,y+1.8,'F'); doc.triangle(x,y-1.8,x-1.8,y,x,y+1.8,'F'); };
-  const emblem=(cx,cy,r)=>{ doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.circle(cx,cy,r,'S'); doc.setFont('times','bold'); doc.setFontSize(r*1.1); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('YW',cx,cy+r*0.35,{align:'center'}); doc.setLineWidth(0.35); doc.line(cx-r-42,cy,cx-r-6,cy); doc.line(cx+r+6,cy,cx+r+42,cy); diamond(cx-r-9,cy); diamond(cx+r+9,cy); };
-  const addImg=(data,x,y,w,h)=>{ doc.setFillColor(WHITE[0],WHITE[1],WHITE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.roundedRect(x-1.2,y-1.2,w+2.4,h+2.4,3,3,'FD'); if(!data){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(10); doc.text('YW',x+w/2,y+h/2,{align:'center'}); return; } const fmt=data.indexOf('image/png')!==-1?'PNG':'JPEG'; doc.addImage(data,fmt,x,y,w,h,undefined,'FAST'); };
+  const diamond=(x,y,s,col)=>{ doc.setFillColor(col[0],col[1],col[2]); doc.triangle(x,y-s,x+s,y,x,y+s,'F'); doc.triangle(x,y-s,x-s,y,x,y+s,'F'); };
+  const emblem=(cx,cy,r)=>{ doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.circle(cx,cy,r,'S'); doc.setFont('times','bold'); doc.setFontSize(r*1.1); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('YW',cx,cy+r*0.35,{align:'center'}); doc.setLineWidth(0.35); doc.line(cx-r-42,cy,cx-r-6,cy); doc.line(cx+r+6,cy,cx+r+42,cy); diamond(cx-r-9,cy,1.8,GOLD); diamond(cx+r+9,cy,1.8,GOLD); };
+  const addImg=(data,x,y,w,h)=>{
+    doc.setFillColor(WHITE[0],WHITE[1],WHITE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.6);
+    doc.roundedRect(x-2,y-2,w+4,h+4,4,4,'FD');
+    if(!data){ doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.setFont('times','bold'); doc.setFontSize(12); doc.text('YW',x+w/2,y+h/2,{align:'center'}); return; }
+    const fmt=data.indexOf('image/png')!==-1?'PNG':'JPEG';
+    doc.addImage(data,fmt,x,y,w,h,undefined,'FAST');
+  };
+
+  /* ---------- Página de producto: imagen GRANDE + datos llamativos ---------- */
+  function drawProduct(p, imgData, startY){
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+    doc.text(String(p.brand).toUpperCase(), M, startY);
+    doc.setFont('times','bold'); doc.setFontSize(21); doc.setTextColor(INK[0],INK[1],INK[2]);
+    const nl=doc.splitTextToSize(p.name, W-2*M);
+    doc.text(nl, M, startY+8);
+    const nameEnd = startY+8+(nl.length-1)*8.5;
+    const imgSize=125, ix=(W-imgSize)/2, iy=nameEnd+6;
+    addImg(imgData, ix, iy, imgSize, imgSize);
+    const yB = iy+imgSize+12;
+    doc.setFont('helvetica','bold'); doc.setFontSize(15);
+    const ptxt = fmtPrice(p.price);
+    const pw = Math.max(70, doc.getTextWidth(ptxt)+14);
+    doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.roundedRect(M, yB, pw, 14, 3,3,'F');
+    doc.setTextColor(255,255,255); doc.text(ptxt, M+7, yB+9.5);
+    doc.setFontSize(12);
+    const stxt = String(p.size||'');
+    const sw = Math.max(44, doc.getTextWidth(stxt)+14);
+    doc.setFillColor(GREEN[0],GREEN[1],GREEN[2]); doc.roundedRect(M+pw+4, yB, sw, 14, 3,3,'F');
+    doc.setTextColor(255,255,255); doc.text(stxt, M+pw+11, yB+9.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
+    doc.text('Momento de uso: '+p.time+'   ·   Paso de rutina: '+p.step, M, yB+22);
+  }
+
+  /* ---------- Encabezado creativo de categoría ---------- */
+  function catHeader(cat, ci, acc){
+    doc.setFillColor(acc[0],acc[1],acc[2]); doc.rect(0,0,W,42,'F');
+    doc.setFillColor(255,255,255);
+    doc.setFont('times','bold'); doc.setFontSize(46); doc.setTextColor(255,255,255);
+    doc.text(pad2(ci), W-M, 30, {align:'right'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.text('C A T E G O R Í A', M, 13);
+    doc.setFont('times','bold'); doc.setFontSize(25);
+    doc.text(cat, M, 25);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+    doc.text(descFor(cat), M, 34);
+    diamond(M+2, 39, 1.6, [255,255,255]); diamond(M+8, 39, 1.2, [255,255,255]); diamond(M+13, 39, 0.9, [255,255,255]);
+  }
+
   layout.forEach((entry,idx)=>{
     if(idx>0) doc.addPage();
     const n=idx+1; bg();
+
+    /* ----- PORTADA: 4 imágenes de 4 marcas distintas ----- */
     if(entry.t==='cover'){
-      emblem(W/2,38,11);
+      emblem(W/2,36,11);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-      doc.text('C O L E C C I Ó N   2 0 2 6   ·   Y U W A', W/2, 58, {align:'center'});
+      doc.text('C O L E C C I Ó N   2 0 2 6   ·   Y U W A', W/2, 56, {align:'center'});
       doc.setFont('times','bold'); doc.setFontSize(34); doc.setTextColor(INK[0],INK[1],INK[2]);
-      doc.text('Catálogo de', W/2, 72, {align:'center'}); doc.text('Skincare Coreano', W/2, 86, {align:'center'});
+      doc.text('Catálogo de', W/2, 70, {align:'center'}); doc.text('Skincare Coreano', W/2, 84, {align:'center'});
       doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-      doc.text('Belleza coreana, elegida para tu piel.', W/2, 96, {align:'center'});
-      const collage=[]; catList.forEach(c=>{ if(collage.length<8){ const pp=prods.find(p=>p.cat===c); if(pp) collage.push(pp); } });
-      for(let i=0;i<prods.length&&collage.length<8;i++){ if(collage.indexOf(prods[i])===-1) collage.push(prods[i]); }
-      const size=40,gap=5,cols=4,totalW=cols*size+(cols-1)*gap,x0=(W-totalW)/2,y0=106;
-      collage.forEach((p,i)=>{ addImg(imgMap[p.id], x0+(i%cols)*(size+gap), y0+Math.floor(i/cols)*(size+gap), size, size); });
+      doc.text('Belleza coreana, elegida para tu piel.', W/2, 94, {align:'center'});
+      const picks=[]; const seenB=[];
+      prods.forEach(p=>{ if(picks.length<4 && seenB.indexOf(p.brand)===-1){ seenB.push(p.brand); picks.push(p); } });
+      prods.forEach(p=>{ if(picks.length<4 && picks.indexOf(p)===-1) picks.push(p); });
+      const size=62, gap=6, total=2*size+gap, x0=(W-total)/2, y0=104;
+      picks.forEach((p,i)=>{ addImg(imgMap[p.id], x0+(i%2)*(size+gap), y0+Math.floor(i/2)*(size+gap), size, size); });
       doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-      doc.text(prods.length+' productos · '+catList.length+' categorías · Envíos a toda Colombia', W/2, y0+2*size+gap+12, {align:'center'});
+      doc.text(prods.length+' productos · '+catList.length+' categorías · Envíos a toda Colombia', W/2, y0+total+12, {align:'center'});
       doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.line(M,H-24,W-M,H-24);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
       doc.text('WhatsApp +57 314 800 3634   ·   @yuwa_co', W/2, H-16, {align:'center'});
       footer(n); return;
     }
+
+    /* ----- CONTENIDO con hipervínculos ----- */
     if(entry.t==='toc'){
       doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Contenido', M, 28);
       doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,32,W-M,32);
@@ -1207,72 +1260,70 @@ function buildPdf(prods, imgMap){
         doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2); doc.line(M,y+8,W-M,y+8);
         y += sub?14:12;
       };
-      tocRow('01','Tu rutina YUWA', routinePage, 'Orden de aplicación y consejos de uso AM / PM');
+      tocRow('01','Tu rutina YUWA', routinePage, 'El ritual coreano paso a paso, AM y PM');
       catList.forEach(c=>tocRow(pad2(catIndexMap[c]), c, catPages[c], descFor(c)));
       tocRow(pad2(catList.length+2),'Pedidos y contacto', contactPage, 'WhatsApp · Instagram · Envíos · Garantía');
       footer(n); return;
     }
+
+    /* ----- RUTINA llamativa (2 páginas) ----- */
     if(entry.t==='routine'){
+      doc.setFillColor(GREEN[0],GREEN[1],GREEN[2]); doc.rect(0,0,W,40,'F');
+      diamond(W-M-4, 8, 2, GOLD); diamond(W-M-12, 12, 1.4, GOLD);
+      doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(27);
+      doc.text('Tu rutina YUWA', M, 17);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(228,234,228);
+      doc.text('Cada paso prepara el siguiente para revelar una piel más equilibrada, luminosa y confortable.', M, 26);
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(217,188,138);
+      doc.text(entry.part===1 ? 'PASOS 01 – 04' : 'PASOS 05 – 07', M, 34);
       const steps = entry.part===1 ? ROUTINE.slice(0,4) : ROUTINE.slice(4);
-      doc.setFont('times','bold'); doc.setFontSize(24); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Tu rutina YUWA', M, 24);
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
-      doc.text('Cada paso prepara el siguiente para revelar una piel más equilibrada, luminosa y confortable.', M, 31);
-      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,35,W-M,35);
-      let ry=44;
+      let y=52;
       steps.forEach(s=>{
-        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
-        doc.text('PASO '+s.n+' · '+(s.am&&s.pm?'AM Y PM':(s.am?'AM':'PM')), M, ry);
-        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(s.title, M, ry+6);
-        doc.setFont('helvetica','normal'); doc.setFontSize(8.6); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
-        const lines=doc.splitTextToSize(s.desc, W-2*M); doc.text(lines, M, ry+12);
-        const dy=ry+12+lines.length*4.1;
+        doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.circle(M+9, y+9, 9, 'F');
+        doc.setTextColor(255,255,255); doc.setFont('times','bold'); doc.setFontSize(12);
+        doc.text(s.n, M+9, y+10.5, {align:'center'});
+        doc.setTextColor(INK[0],INK[1],INK[2]); doc.setFont('helvetica','bold'); doc.setFontSize(13.5);
+        doc.text(s.title, M+24, y+7);
+        const chip=(s.am&&s.pm)?'AM · PM':(s.am?'AM':'PM');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8);
+        const cw=doc.getTextWidth(chip)+8;
+        doc.setDrawColor(GREEN[0],GREEN[1],GREEN[2]); doc.setLineWidth(0.4); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]);
+        doc.roundedRect(W-M-cw, y+2, cw, 6, 3,3,'S');
+        doc.text(chip, W-M-cw+4, y+6.2);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.8); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]);
+        const dl=doc.splitTextToSize(s.desc, W-M-(M+24));
+        doc.text(dl, M+24, y+13);
+        const dh=dl.length*3.9;
         doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(107,84,38);
-        const tips=doc.splitTextToSize('Beauty tip: '+s.tip, W-2*M); doc.text(tips, M, dy+2);
-        ry=dy+2+tips.length*3.7+8;
+        const tl=doc.splitTextToSize('Beauty tip: '+s.tip, W-M-(M+24));
+        doc.text(tl, M+24, y+13+dh+2);
+        y += 13+dh+2+tl.length*3.4+9;
+        doc.setDrawColor(LINEC[0],LINEC[1],LINEC[2]); doc.setLineWidth(0.2);
+        if(s!==steps[steps.length-1]) doc.line(M, y-6, W-M, y-6);
       });
-      footer(n); return;
-    }
-    if(entry.t==='cat'){
-      const acc=hexToRgb(accentFor(entry.cat));
-      if(entry.first){
-        doc.setFont('times','bold'); doc.setFontSize(24); doc.setTextColor(acc[0],acc[1],acc[2]);
-        doc.text(pad2(entry.ci)+' · '+entry.cat, M, 26);
-        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(descFor(entry.cat), M, 33);
-        doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.8); doc.line(M,37,W-M,37);
-      } else {
-        doc.setFont('times','bold'); doc.setFontSize(14); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(entry.cat+' · continuación', M, 24);
-        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.line(M,28,W-M,28);
+      if(entry.part===2){
+        doc.setFillColor(PALE[0],PALE[1],PALE[2]); doc.roundedRect(M, y, W-2*M, 16, 3,3,'F');
+        doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4); doc.roundedRect(M, y, W-2*M, 16, 3,3,'S');
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(107,84,38);
+        doc.text('◇  La constancia es tu mejor activo: disfruta cada paso, sin perfeccionismo.', W/2, y+10, {align:'center'});
       }
-      const y0=entry.first?46:36;
-      entry.items.forEach((p,i)=>{
-        const y=y0+i*120;
-        addImg(imgMap[p.id], M, y, 88, 88);
-        const rx=M+96, rw=W-M-rx;
-        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(String(p.brand).toUpperCase(), rx, y+6);
-        doc.setFont('times','bold'); doc.setFontSize(15); doc.setTextColor(INK[0],INK[1],INK[2]);
-        const nl=doc.splitTextToSize(p.name, rw); doc.text(nl, rx, y+13);
-        let after=y+13+(nl.length-1)*6.4;
-        if(p.tagline){ doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(GREEN[0],GREEN[1],GREEN[2]); const tl=doc.splitTextToSize(p.tagline, rw); doc.text(tl, rx, after+6); after+=6+tl.length*4.1; }
-        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(p.size+' · '+p.step+' · '+p.time, rx, after+5); after+=9;
-        const priceTxt=fmtPrice(p.price);
-        doc.setFont('helvetica','bold'); doc.setFontSize(11);
-        const pw=doc.getTextWidth(priceTxt)+8;
-        doc.setFillColor(PALE[0],PALE[1],PALE[2]); doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.4);
-        doc.roundedRect(rx, after, pw, 9, 2, 2, 'FD');
-        doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(priceTxt, rx+4, after+6.2); after+=15;
-        if(p.ings&&p.ings.length){
-          doc.setFont('helvetica','normal'); doc.setFontSize(8.3);
-          p.ings.slice(0,4).forEach(x=>{
-            const txt = x.ing + (x.ben ? ': ' + x.ben : '');
-            const bl=doc.splitTextToSize(txt, rw-5);
-            doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text('◇', rx, after+3);
-            doc.setTextColor(SOFT[0],SOFT[1],SOFT[2]); doc.text(bl, rx+5, after+3);
-            after+=bl.length*3.9+2.2;
-          });
-        }
-      });
       footer(n); return;
     }
+
+    /* ----- PRODUCTO con salto de página por categoría ----- */
+    if(entry.t==='prod'){
+      const acc = hexToRgb(accentFor(entry.cat));
+      if(entry.first){ catHeader(entry.cat, entry.ci, acc); drawProduct(entry.p, imgMap[entry.p.id], 54); }
+      else {
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(acc[0],acc[1],acc[2]);
+        doc.text(pad2(entry.ci)+' · '+entry.cat.toUpperCase(), M, 16);
+        doc.setDrawColor(acc[0],acc[1],acc[2]); doc.setLineWidth(0.5); doc.line(M, 20, W-M, 20);
+        drawProduct(entry.p, imgMap[entry.p.id], 30);
+      }
+      footer(n); return;
+    }
+
+    /* ----- CONTACTO ----- */
     if(entry.t==='contact'){
       doc.setFont('times','bold'); doc.setFontSize(26); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text('Pedidos y contacto', M, 30);
       doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(M,34,W-M,34);
